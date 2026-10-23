@@ -1,0 +1,2181 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مقياس Vector</title>
+<link rel="stylesheet" href="fonts.css">
+<link rel="icon" type="image/png" href="icon.png">
+<meta name="description" content="مقياس Vector: يكشف أبرز خمس نقاط قوة لديك بأسلوب الاختيار الإجباري، مع تقرير مهني مفصل.">
+<meta name="theme-color" content="#2b2a7a">
+<style>
+html, body { margin: 0; }
+/* Layout: one centered 1100px column; sticky header; calm stacked sections. Identity: indigo (trust, depth) + mint (growth), four-pillar mark. */
+:root {
+  --bg: #f0eff9;
+  --surface: #ffffff;
+  --surface-2: #e9e8f5;
+  --fg: #17163d;
+  --muted: #5b5a80;
+  --line: #e0e0ee;
+  --ink: #2b2a7a;
+  --ink-fg: #ffffff;
+  --mint: #14a085;
+  --mint-fg: #ffffff;
+  --mint-soft: #ddf4ee;
+  --hero-bg: #2b2a7a;
+  --focus: #14a085;
+  --warn-bg: #fff6dc;
+  --warn-fg: #7a5200;
+  --warn-line: #f2d98c;
+  --shadow: 0 1px 2px rgba(23, 22, 61, .05), 0 10px 28px -14px rgba(43, 42, 122, .22);
+  --domain-exec: #4c5bd4;
+  --domain-inf: #d9741a;
+  --domain-rel: #1e9461;
+  --domain-str: #8a4fdb;
+  --font: "Readex Pro", "IBM Plex Sans Arabic", "Tajawal", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Readex Pro", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r-lg: 20px;
+  --r-md: 14px;
+  --r-sm: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e0d24; --surface: #17163a; --surface-2: #211f4d; --fg: #ecebfb; --muted: #a6a5c8; --line: #2e2c5e;
+    --ink: #b9b6ff; --ink-fg: #17163d; --mint: #2fd1b0; --mint-fg: #062a23; --mint-soft: #123b3a; --hero-bg: #1f1d57; --focus: #2fd1b0;
+    --warn-bg: #2d2510; --warn-fg: #f5d27a; --warn-line: #5a4716;
+    --shadow: 0 0 0 1px rgba(255,255,255,.02);
+    --domain-exec: #8c97ff; --domain-inf: #ffa94d; --domain-rel: #4ade9a; --domain-str: #c29bff;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e0d24; --surface: #17163a; --surface-2: #211f4d; --fg: #ecebfb; --muted: #a6a5c8; --line: #2e2c5e;
+  --ink: #b9b6ff; --ink-fg: #17163d; --mint: #2fd1b0; --mint-fg: #062a23; --mint-soft: #123b3a; --hero-bg: #1f1d57; --focus: #2fd1b0;
+  --warn-bg: #2d2510; --warn-fg: #f5d27a; --warn-line: #5a4716;
+  --shadow: 0 0 0 1px rgba(255,255,255,.02);
+  --domain-exec: #8c97ff; --domain-inf: #ffa94d; --domain-rel: #4ade9a; --domain-str: #c29bff;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font);
+  font-size: 16px; line-height: 1.75; font-variant-numeric: lining-nums;
+  min-height: 100%;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+h1, h2, h3, h4 { line-height: 1.35; margin: 0; text-wrap: balance; font-weight: 700; }
+p { margin: 0; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 8px; }
+.ico { width: 1.15em; height: 1.15em; flex: none; stroke-width: 2; }
+[data-lucide] { display: inline-block; width: 1.15em; height: 1.15em; }
+
+.wrap { max-width: 1100px; margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* Header */
+.site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.site-header .wrap { display: flex; align-items: center; gap: 16px; padding-block: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; background: none; border: 0; padding: 0; }
+.brand svg { width: 36px; height: 36px; flex: none; }
+.brand-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.2; }
+.wordmark { font-weight: 700; font-size: 1.12rem; }
+.brand-text small { font-size: .72rem; font-weight: 500; color: var(--muted); }
+.latin { font-family: "IBM Plex Mono", var(--font); font-weight: 600; letter-spacing: -.01em; unicode-bidi: isolate; }
+.brand-title { font-size: clamp(2.6rem, 1.6rem + 4.4vw, 4.4rem); font-weight: 700; line-height: 1.1; color: var(--ink); }
+.brand-title .latin { color: var(--mint); font-weight: 600; }
+.pitch { margin-top: 18px; max-width: 23em; padding: 12px 16px; border-radius: 12px; font-size: 1rem; line-height: 1.75; color: var(--fg);
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface)); border: 1px solid color-mix(in srgb, var(--ink) 16%, var(--line));
+  }
+.tagline { font-size: clamp(1.35rem, 1.1rem + 1.2vw, 1.9rem); font-weight: 300; margin-top: 10px; line-height: 1.45; }
+.tagline b { font-weight: 700; }
+.nav { display: flex; gap: 4px; margin-inline-start: auto; }
+.nav button { background: none; border: 0; padding: 6px 12px; border-radius: 999px; color: var(--muted); font-weight: 500; }
+.nav button[aria-current="page"] { color: var(--ink-fg); background: var(--ink); font-weight: 600; }
+.nav button:hover { color: var(--fg); }
+.theme { display: inline-flex; padding: 3px; gap: 2px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+.theme button { border: 0; background: none; width: 32px; height: 32px; border-radius: 999px; display: grid; place-items: center; color: var(--muted); }
+.theme button[aria-pressed="true"] { background: var(--ink); color: var(--ink-fg); }
+@media (max-width: 720px) {
+  .site-header .wrap { flex-wrap: wrap; row-gap: 10px; }
+  .theme { margin-inline-start: auto; }
+  .nav { order: 3; flex-basis: 100%; margin: 0; padding: 4px; gap: 4px; border-radius: 999px; background: var(--surface-2); }
+  .nav button { flex: 1; padding: 8px 6px; font-size: .92rem; }
+}
+
+main { padding-block: 28px 64px; }
+.footer { border-top: 1px solid var(--line); color: var(--muted); font-size: .85rem; }
+.footer .wrap { padding-block: 20px 28px; display: flex; flex-direction: column; gap: 6px; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 10px 22px; border-radius: 999px; border: 1px solid transparent; font-weight: 600; transition: transform .15s ease, background .15s ease; }
+.btn:active { transform: scale(.98); }
+.btn-primary { background: var(--ink); color: var(--ink-fg); }
+.btn-primary:hover { background: color-mix(in srgb, var(--ink) 88%, var(--mint)); }
+.btn-ghost { background: var(--surface); border-color: var(--line); color: var(--fg); }
+.btn-ghost:hover { background: var(--surface-2); }
+.btn-danger { background: transparent; border-color: color-mix(in srgb, #dc2626 45%, var(--line)); color: #dc2626; }
+.btn-sm { min-height: 38px; padding: 6px 14px; font-size: .9rem; }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }
+.link-btn { background: none; border: 0; padding: 4px 6px; color: var(--muted); text-decoration: underline; text-underline-offset: 4px; font-size: .92rem; }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow); }
+.hero .eyebrow { color: var(--mint); }
+.method { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin-top: 36px; border-block: 1px solid var(--line); }
+.stat { padding: 16px 12px; display: flex; flex-direction: column; gap: 2px; }
+.stat + .stat { border-inline-start: 1px solid var(--line); }
+.stat b { font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2rem); font-weight: 600; color: var(--ink); line-height: 1.2; }
+.stat span { color: var(--muted); font-size: .9rem; }
+.unique { margin-top: 14px; font-size: .95rem; color: var(--muted); }
+.unique b { font-family: var(--mono); color: var(--mint); font-weight: 600; }
+@media (max-width: 560px) { .method { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stat:nth-child(3) { border-inline-start: 0; } .stat:nth-child(n+3) { border-top: 1px solid var(--line); } }
+.eyebrow { font-size: .82rem; color: var(--muted); font-weight: 600; letter-spacing: .02em; }
+.muted { color: var(--muted); }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+.section { margin-top: 56px; }
+.section-title { font-size: 1.35rem; margin-bottom: 18px; }
+
+/* Landing */
+.hero { display: grid; grid-template-columns: 1.15fr .85fr; gap: 32px; align-items: center; padding-block: 12px 8px; }
+.hero h1 { font-size: clamp(1.9rem, 1.2rem + 3vw, 3.1rem); line-height: 1.25; }
+.hero .lead { font-size: 1.1rem; color: var(--muted); max-width: 34em; margin-top: 16px; }
+.hero .cta { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.print-art { width: 100%; max-width: 300px; justify-self: center; aspect-ratio: 1; }
+.print-art path { fill: none; stroke-linecap: round; }
+.resume { padding: 20px; display: flex; flex-direction: column; gap: 14px; max-width: 520px; }
+.resume h2 { font-size: 1.1rem; }
+.resume .row { display: flex; flex-wrap: wrap; gap: 10px; }
+.resume .bar { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.resume .bar i { display: block; height: 100%; background: var(--ink); border-radius: 99px; }
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 40px; }
+.feature { padding: 18px; display: flex; gap: 12px; align-items: center; font-weight: 600; }
+.feature .ic { width: 42px; height: 42px; border-radius: 12px; background: var(--mint-soft); color: var(--mint); display: grid; place-items: center; flex: none; }
+.domains { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.domain-card { padding: 20px; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+.domain-card .ic { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; color: var(--dc); background: color-mix(in srgb, var(--dc) 14%, transparent); }
+.domain-card h3 { font-size: 1.05rem; }
+.domain-card p { color: var(--muted); font-size: .95rem; }
+.domain-card .count { font-size: .8rem; color: var(--dc); font-weight: 600; }
+@media (max-width: 900px) { .domains { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 720px) {
+  .hero { grid-template-columns: 1fr; }
+  .print-art { display: none; }
+  .features { grid-template-columns: 1fr; }
+}
+
+
+/* Intro */
+.narrow { max-width: 640px; margin-inline: auto; }
+.intro { padding: 28px; display: flex; flex-direction: column; gap: 20px; }
+.intro h1 { font-size: 1.6rem; }
+.intro ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.intro li { display: flex; gap: 10px; align-items: flex-start; }
+.intro li .ico { margin-top: .35em; color: var(--domain-rel); }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-weight: 600; font-size: .95rem; }
+.field-err { color: #dc2626; font-size: .88rem; font-weight: 500; }
+.field input[aria-invalid="true"] { border-color: #dc2626; }
+.opt-check { display: flex; align-items: center; gap: 10px; font-weight: 500 !important; font-size: .95rem; margin-top: 6px; cursor: pointer; }
+.opt-check input { width: 20px; height: 20px; min-height: 0; padding: 0; accent-color: var(--ink); margin: 0; flex: none; }
+.field input { min-height: 48px; padding: 10px 14px; border-radius: var(--r-sm); border: 1px solid var(--line); background: var(--bg); }
+
+/* Assessment */
+.progress { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+.progress-meta { display: flex; justify-content: space-between; font-size: .92rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.progress-meta b, .bar-row .vl, .dom-row .top span:last-child, .r-head .num, .stat b { font-family: var(--mono); }
+.progress-meta b { color: var(--fg); }
+.track { position: relative; height: 10px; border-radius: 99px; background: var(--surface-2); }
+.track .fill { position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: 99px; background: linear-gradient(to left, var(--ink), var(--mint)); transition: width .45s cubic-bezier(.2,.8,.2,1); }
+.track .tick { position: absolute; top: 50%; width: 14px; height: 14px; margin-inline-start: -7px; transform: translateY(-50%); border-radius: 50%; background: var(--surface); border: 2px solid var(--line); transition: border-color .3s, background .3s; }
+.track .tick.on { border-color: var(--ink); background: var(--ink); }
+.q-card { padding: clamp(22px, 4vw, 40px); min-height: 220px; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+.q-card .eyebrow { font-variant-numeric: tabular-nums; }
+.q-text { font-size: clamp(1.3rem, 1.05rem + 1.2vw, 1.85rem); font-weight: 600; line-height: 1.6; }
+.likert { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 18px; }
+.likert button { min-height: 64px; padding: 10px 8px; border-radius: var(--r-md); border: 1.5px solid var(--line); background: var(--surface); font-weight: 600; font-size: .95rem; line-height: 1.45; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: background .15s, border-color .15s, transform .12s; }
+.likert button .k { font-size: .75rem; color: var(--muted); font-weight: 500; font-variant-numeric: tabular-nums; }
+.likert button:hover { border-color: var(--ink); }
+.likert button[aria-pressed="true"] { background: var(--ink); color: var(--ink-fg); border-color: var(--ink); transform: scale(.98); }
+.likert button[aria-pressed="true"] .k { color: inherit; opacity: .7; }
+.q-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 12px; }
+@media (max-width: 720px) {
+  .likert { grid-template-columns: 1fr; }
+  .likert button { flex-direction: row; justify-content: space-between; min-height: 54px; padding-inline: 16px; }
+}
+.enter-fwd { animation: enterFwd .32s cubic-bezier(.2,.8,.2,1); }
+.enter-back { animation: enterBack .32s cubic-bezier(.2,.8,.2,1); }
+@keyframes enterFwd { from { opacity: .2; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+@keyframes enterBack { from { opacity: .2; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+
+/* Forced-choice pair */
+.name-note { margin-top: 22px; max-width: 62em; color: var(--muted); font-size: .95rem; }
+.name-note b { color: var(--fg); }
+.example { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: var(--r-md); background: var(--surface-2); }
+.ex-row { display: flex; gap: 10px; align-items: center; font-weight: 600; }
+.st-tag { flex: none; width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; font-weight: 700; background: var(--ink); color: var(--ink-fg); font-size: .95rem; }
+.q-ask { text-align: center; margin-bottom: 12px; font-size: .95rem; }
+.pair { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 14px; align-items: stretch; }
+.st { padding: clamp(18px, 3vw, 28px); display: flex; flex-direction: column; gap: 14px; min-height: 170px; transition: border-color .2s, box-shadow .2s, transform .2s; }
+.st-text { font-size: clamp(1.1rem, .98rem + .7vw, 1.4rem); font-weight: 600; line-height: 1.65; }
+.st.chosen { border-color: var(--side); box-shadow: 0 0 0 2px var(--side); }
+#st-a { --side: var(--ink); --side-fg: var(--ink-fg); }
+#st-b { --side: var(--mint); --side-fg: var(--mint-fg); }
+#st-a .st-tag, #st-b .st-tag { background: var(--side); color: var(--side-fg); }
+.or { align-self: center; color: var(--muted); font-weight: 700; font-size: .95rem; }
+.scale5 { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 18px; }
+.scale5 { position: relative; padding: 6px 2px 0; }
+.sv { --side: var(--muted); min-height: 76px; padding: 6px 2px; border-radius: var(--r-md); border: 0; background: transparent; font-weight: 500; font-size: .82rem; line-height: 1.35; color: var(--muted); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 8px; }
+.sv-1, .sv-2 { --side: var(--ink); }
+.sv-4, .sv-5 { --side: var(--mint); }
+.sv .dot { display: block; border-radius: 50%; border: 2.5px solid var(--side); background: transparent; transition: background .15s, transform .15s; }
+.sv-1 .dot, .sv-5 .dot { width: 46px; height: 46px; }
+.sv-2 .dot, .sv-4 .dot { width: 34px; height: 34px; margin-block: 6px; }
+.sv-3 .dot { width: 22px; height: 22px; margin-block: 12px; }
+.sv:hover .dot { background: color-mix(in srgb, var(--side) 16%, transparent); transform: scale(1.06); }
+.sv[aria-pressed="true"] { color: var(--fg); font-weight: 700; }
+.sv[aria-pressed="true"] .dot { background: var(--side); transform: scale(1.04); }
+.timer { display: flex; align-items: center; gap: 10px; margin-top: 16px; color: var(--muted); font-family: var(--mono); font-variant-numeric: tabular-nums; font-weight: 600; }
+.timer-track { flex: 1; height: 6px; border-radius: 99px; background: var(--surface-2); overflow: hidden; position: relative; }
+.timer-track i { position: absolute; inset-block: 0; inset-inline-start: 0; width: 100%; background: var(--mint); border-radius: 99px; }
+.timer span { min-width: 2ch; text-align: center; }
+.timer.low { color: #dc2626; }
+.timer.low .timer-track i { background: #dc2626; }
+.q-wrap { display: flex; flex-direction: column; }
+@media (max-width: 720px) {
+  .pair { grid-template-columns: 1fr; gap: 8px; }
+  .st { min-height: 0; flex-direction: row; align-items: flex-start; }
+  .or { justify-self: center; }
+  .sv { min-height: 70px; font-size: .74rem; }
+  .sv-1 .dot, .sv-5 .dot { width: 40px; height: 40px; }
+  .sv-2 .dot, .sv-4 .dot { width: 30px; height: 30px; margin-block: 5px; }
+  .sv-3 .dot { width: 20px; height: 20px; margin-block: 10px; }
+}
+
+.analyzing { min-height: 50vh; display: grid; place-items: center; text-align: center; gap: 16px; }
+.analyzing .pulse { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); margin-inline: auto; animation: pulse 1.2s ease-in-out infinite; }
+.analyzing .pulse [data-lucide], .analyzing .pulse svg { width: 32px; height: 32px; }
+@keyframes pulse { 50% { transform: scale(1.12); background: color-mix(in srgb, var(--domain-exec) 20%, var(--surface-2)); } }
+
+/* Results */
+.res-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 22px; }
+.res-head h1 { font-size: clamp(1.6rem, 1.2rem + 2vw, 2.4rem); }
+.top5 { display: grid; grid-template-columns: 1.3fr 1fr 1fr; grid-template-rows: auto auto; gap: 14px; }
+.s-card { position: relative; padding: 18px; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; min-width: 0; overflow: hidden; }
+.s-card .rank { font-size: .85rem; color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
+.s-card h3 { font-size: 1.15rem; }
+.s-card p { color: var(--muted); font-size: .92rem; }
+.s-card .meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; }
+.score { font-family: var(--mono); font-weight: 600; font-variant-numeric: tabular-nums; font-size: 1.05rem; }
+.score small { color: var(--muted); font-weight: 500; font-size: .75em; }
+.s-card.first { grid-row: span 2; padding: 26px; background: linear-gradient(160deg, color-mix(in srgb, var(--dc) 14%, var(--surface)), var(--surface) 70%); }
+.s-card.first h3 { font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2rem); }
+.s-card.first p { font-size: 1.02rem; }
+.s-card.first .score { font-size: 2.2rem; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: .78rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; color: var(--dc); background: color-mix(in srgb, var(--dc) 13%, transparent); white-space: nowrap; }
+.badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--dc); }
+@media (max-width: 860px) { .top5 { grid-template-columns: 1fr 1fr; } .s-card.first { grid-column: 1 / -1; grid-row: auto; } }
+@media (max-width: 480px) { .top5 { grid-template-columns: 1fr; } }
+
+.chart-card { padding: 22px; }
+.chart-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+.chart-head h2 { font-size: 1.2rem; }
+.tabs { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--surface-2); }
+.tabs button { border: 0; background: none; padding: 6px 16px; border-radius: 999px; font-weight: 600; color: var(--muted); }
+.tabs button[aria-selected="true"] { background: var(--surface); color: var(--fg); box-shadow: var(--shadow); }
+.radar-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 24px; align-items: center; }
+.radar-wrap svg { width: 100%; max-width: 440px; height: auto; justify-self: center; }
+.dom-list { display: flex; flex-direction: column; gap: 14px; }
+.dom-row { display: flex; flex-direction: column; gap: 6px; }
+.dom-row .top { display: flex; justify-content: space-between; font-weight: 600; font-size: .95rem; }
+.dom-row .top span:last-child { font-variant-numeric: tabular-nums; color: var(--dc); }
+.mini { height: 8px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.mini i { display: block; height: 100%; background: var(--dc); border-radius: 99px; }
+@media (max-width: 760px) { .radar-wrap { grid-template-columns: 1fr; } }
+.bars { display: flex; flex-direction: column; gap: 8px; }
+.bars-scale { display: grid; grid-template-columns: 150px minmax(0, 1fr) 44px; gap: 10px; font-size: .75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.bars-scale .sc { display: flex; justify-content: space-between; }
+.bar-row { display: grid; grid-template-columns: 150px minmax(0, 1fr) 44px; gap: 10px; align-items: center; font-size: .92rem; }
+.bar-row .nm { display: flex; align-items: center; gap: 4px; min-width: 0; font-weight: 500; }
+.bar-row .nm .ico { color: var(--domain-inf); width: 1em; height: 1em; fill: currentColor; }
+.bar-row .bt { height: 14px; border-radius: 6px; background: repeating-linear-gradient(to left, var(--surface-2) 0 calc(25% - 1px), var(--line) calc(25% - 1px) 25%); position: relative; overflow: hidden; }
+.bar-row .bt i { position: absolute; inset-block: 0; inset-inline-start: 0; background: var(--dc); border-radius: 6px; }
+.bar-row .vl { font-variant-numeric: tabular-nums; font-weight: 600; text-align: end; }
+.bar-row.top .nm { font-weight: 700; }
+@media (max-width: 520px) { .bars-scale, .bar-row { grid-template-columns: 112px minmax(0, 1fr) 34px; gap: 8px; } .bar-row { font-size: .85rem; } }
+.insight { margin-top: 18px; padding: 16px 18px; border-radius: var(--r-md); background: var(--surface-2); display: flex; gap: 12px; align-items: flex-start; }
+.insight .ico { margin-top: .3em; color: var(--dc, var(--fg)); }
+
+.notice { display: flex; gap: 10px; align-items: flex-start; padding: 14px 16px; border-radius: var(--r-md); background: var(--warn-bg); color: var(--warn-fg); border: 1px solid var(--warn-line); font-size: .95rem; }
+.notice .ico { margin-top: .3em; }
+.notices { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+
+.report { display: flex; flex-direction: column; gap: 12px; }
+.r-item { border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); overflow: hidden; }
+.r-head { width: 100%; display: flex; align-items: center; gap: 14px; padding: 18px 20px; background: none; border: 0; text-align: start; }
+.r-head .num { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; font-weight: 700; color: var(--dc); background: color-mix(in srgb, var(--dc) 14%, transparent); flex: none; font-variant-numeric: tabular-nums; }
+.r-head .t { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.r-head .t h3 { font-size: 1.12rem; }
+.r-head .chev { transition: transform .2s; color: var(--muted); }
+.r-head[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.r-body { padding: 0 20px 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px 28px; }
+.r-body .summary { grid-column: 1 / -1; font-size: 1.04rem; max-width: 62em; padding-top: 4px; border-top: 1px solid var(--line); padding-block-start: 16px; }
+.r-block { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.r-block h4 { display: flex; align-items: center; gap: 8px; font-size: .98rem; }
+.r-block h4 .ico { color: var(--dc); }
+.r-block ul { margin: 0; padding-inline-start: 1.1em; display: flex; flex-direction: column; gap: 4px; color: var(--fg); }
+.r-block ul li::marker { color: var(--dc); }
+.r-block.wide { grid-column: 1 / -1; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.checklist { display: flex; flex-direction: column; gap: 8px; }
+.check { display: flex; gap: 12px; align-items: flex-start; padding: 10px 12px; border-radius: var(--r-sm); background: var(--surface-2); cursor: pointer; }
+.check input { width: 20px; height: 20px; margin: .25em 0 0; accent-color: var(--ink); flex: none; }
+.check.done span { text-decoration: line-through; color: var(--muted); }
+@media (max-width: 720px) { .r-body { grid-template-columns: 1fr; } .r-head { padding: 16px; } .r-body { padding: 0 16px 18px; } }
+
+.complement { padding: 22px; display: flex; flex-direction: column; gap: 10px; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+@media (max-width: 720px) {
+  .actions { position: fixed; z-index: 15; inset-inline: 0; bottom: 0; margin: 0; background: var(--surface); border-top: 1px solid var(--line);
+    padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .actions .btn { padding: 8px 6px; font-size: .82rem; min-height: 52px; flex-direction: column; gap: 2px; border-radius: 14px; line-height: 1.3; }
+  main.has-actions { padding-bottom: 120px; }
+}
+
+/* History */
+.h-list { display: flex; flex-direction: column; gap: 12px; }
+.h-item { padding: 16px 18px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.h-item .info { flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.h-item .names { display: flex; flex-wrap: wrap; gap: 6px; }
+.h-item .ops { display: flex; gap: 8px; flex-wrap: wrap; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+.empty { padding: 40px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.empty .ic { width: 56px; height: 56px; border-radius: 18px; background: var(--surface-2); display: grid; place-items: center; }
+
+/* About */
+.prose { max-width: 68ch; display: flex; flex-direction: column; gap: 16px; }
+.prose h2 { font-size: 1.2rem; margin-top: 12px; }
+.prose ul { margin: 0; padding-inline-start: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+.disclaimer { padding: 16px 18px; border-radius: var(--r-md); border: 1px dashed var(--line); color: var(--muted); }
+
+/* Toast */
+.toast-host { position: fixed; z-index: 40; inset-inline: 0; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); display: flex; justify-content: center; pointer-events: none; padding-inline: 16px; }
+.toast { background: var(--ink); color: var(--ink-fg); padding: 10px 18px; border-radius: 999px; font-weight: 600; box-shadow: 0 10px 30px -10px rgba(0,0,0,.4); animation: toastIn .3s ease; max-width: 100%; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px); } }
+@media (max-width: 720px) { .toast-host.lift { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); } }
+.storage-note { font-size: .85rem; padding: 8px 12px; border-radius: 10px; background: var(--warn-bg); color: var(--warn-fg); margin-bottom: 16px; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+
+/* ---- Vivid layer: hero panel, tinted cards ---- */
+.hero-panel { --ink: #ffffff; --ink-fg: #2b2a7a; --fg: #ffffff; --muted: rgba(255,255,255,.74); --line: rgba(255,255,255,.18);
+  --domain-exec: #8c97ff; --domain-inf: #ffa94d; --domain-rel: #4ade9a; --domain-str: #c29bff;
+  background-color: var(--hero-bg); color: #fff; border-radius: 28px; padding: clamp(22px, 4vw, 44px);
+  background-image: linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px); background-size: 44px 100%; }
+.hero-panel .hero .eyebrow { color: #5ee0c4; }
+.hero-panel .btn-primary { background: #2fd1b0; color: #062a23; }
+.hero-panel .btn-primary:hover { background: #5ee0c4; }
+.hero-panel .resume { --ink: #2b2a7a; --ink-fg: #fff; --fg: #17163d; --muted: #5b5a80; --line: #e0e0ee; color: #17163d; background: #fff; }
+.hero-panel .resume .btn-ghost { background: #fff; color: #17163d; border-color: #e0e0ee; }
+.hero-panel .method { margin-top: 28px; }
+.hero-panel .stat b { color: #fff; }
+.hero-panel .unique b { color: #5ee0c4; }
+.features { margin-top: 18px; }
+.feature { padding: 12px 16px; background: var(--surface); }
+.name-note { margin-top: 16px; padding: 14px 18px; border-radius: var(--r-md); background: var(--mint-soft); color: var(--fg); max-width: none; }
+.name-note b { color: var(--mint); }
+.domain-card { background: color-mix(in srgb, var(--dc) 9%, var(--surface)); border-color: color-mix(in srgb, var(--dc) 26%, var(--line)); }
+.domain-card .ic { background: var(--dc); color: var(--surface); }
+.domain-card .count { align-self: flex-start; padding: 2px 10px; border-radius: 999px; background: color-mix(in srgb, var(--dc) 16%, transparent); }
+.s-card { background: color-mix(in srgb, var(--dc) 7%, var(--surface)); border-color: color-mix(in srgb, var(--dc) 22%, var(--line)); }
+.s-card.first { background: color-mix(in srgb, var(--dc) 16%, var(--surface)); }
+.r-item { border-color: color-mix(in srgb, var(--dc) 18%, var(--line)); }
+.r-head .num { background: var(--dc); color: var(--surface); }
+#st-a { background: color-mix(in srgb, var(--ink) 6%, var(--surface)); }
+#st-b { background: color-mix(in srgb, var(--mint) 9%, var(--surface)); }
+.chart-card, .complement { background: var(--surface); }
+.complement { background: color-mix(in srgb, var(--dc) 7%, var(--surface)); }
+@media (max-width: 720px) {
+  .hero-panel { border-radius: 22px; }
+  .features { gap: 8px; }
+}
+@media (max-width: 560px) {
+  .domains { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .domain-card { padding: 14px; gap: 6px; border-radius: 16px; }
+  .domain-card .ic { width: 36px; height: 36px; border-radius: 11px; }
+  .domain-card h3 { font-size: .98rem; }
+  .domain-card p { font-size: .84rem; line-height: 1.6; }
+  .domain-card .count { font-size: .74rem; }
+  .section { margin-top: 36px; }
+  .section-title { font-size: 1.15rem; margin-bottom: 12px; }
+}
+
+/* Display type: light running words with a heavy key phrase, in the same face */
+h1, .section-title, .s-card h3, .chart-head h2, .complement h2, .prose h2, .r-head .t h3, .empty h2, .resume h2 { font-family: var(--display); font-weight: 700; letter-spacing: 0; }
+h1.split { font-weight: 300; }
+h1.split b { font-weight: 700; }
+
+.st-text { font-size: clamp(1.15rem, 1rem + .7vw, 1.45rem); font-weight: 500; line-height: 1.75; }
+.section-title { font-size: 1.5rem; }
+.s-card.first h3 { font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.2rem); font-weight: 700; }
+#print-root .p-title { font-size: 26px; font-weight: 700; }
+#print-root .p-h { font-size: 18px; }
+
+
+/* ---- Certificate ---- */
+.cert { --c-ink: var(--ink); --c-ink-fg: var(--ink-fg); --c-fg: var(--fg); --c-muted: var(--muted); --c-line: var(--line); --c-paper: var(--surface); --c-mint: var(--mint);
+  background: var(--c-paper); border-radius: 20px; padding: 12px; box-shadow: var(--shadow); max-width: 660px; margin-inline: auto; }
+.cert-in { border: 2px solid var(--c-ink); outline: 1px solid var(--c-ink); outline-offset: 4px; border-radius: 12px; margin: 6px;
+  padding: clamp(24px, 5vw, 42px) 18px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+.cert-in > svg { margin-bottom: 4px; }
+.cert-brand { color: var(--c-mint); font-weight: 600; font-size: .95rem; }
+.cert-title { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem) !important; font-weight: 700; color: var(--c-fg); margin: 2px 0 0; }
+.cert-for { color: var(--c-muted); font-size: .95rem; margin-top: 6px; }
+.cert-name { font-size: clamp(1.8rem, 1.4rem + 1.6vw, 2.5rem); font-weight: 700; color: var(--c-ink); line-height: 1.3; }
+.cert-seal { width: 118px; height: 118px; border-radius: 50%; background: var(--c-ink); color: var(--c-ink-fg); display: flex; flex-direction: column; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 5px var(--c-paper), 0 0 0 7px var(--c-mint); margin: 16px 0 8px; }
+.cert-seal b { font-family: var(--mono); font-size: 2.3rem; line-height: 1; font-weight: 600; }
+.cert-seal span { font-size: .78rem; margin-top: 6px; }
+.cert-top { font-size: 1.45rem; font-weight: 700; color: var(--c-fg); }
+.cert-tag { color: var(--c-muted); }
+.cert-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; }
+.cert-chip { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--c-line); border-radius: 999px; padding: 5px 12px; font-size: .92rem; color: var(--c-fg); }
+.cert-chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--dc); }
+.cert-chip b { font-family: var(--mono); color: var(--dc); font-weight: 600; }
+.cert-meta { display: flex; gap: 18px; justify-content: center; color: var(--c-muted); font-size: .85rem; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--c-line); width: 100%; max-width: 380px; }
+.mono-ref { font-family: var(--mono); letter-spacing: .04em; }
+#print-root .cert-page { min-height: 960px; display: flex; align-items: center; justify-content: center; }
+#print-root .cert { --c-mint: var(--p-mint); --c-ink: var(--p-ink); --c-ink-fg: var(--p-bg); --c-fg: var(--p-fg); --c-muted: var(--p-muted); --c-line: var(--p-line); --c-paper: var(--p-surface);
+  width: 620px; box-shadow: none; font-size: 15px; }
+
+
+/* ---- Owner dashboard ---- */
+.foot-row { flex-direction: row !important; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+.foot-row .link-btn { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+.o-lock { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; background: var(--surface-2); color: var(--ink); }
+.o-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 18px; }
+.o-tools { display: flex; gap: 8px; flex-wrap: wrap; }
+.o-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
+.o-stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.o-stat span { color: var(--muted); font-size: .85rem; }
+.o-stat b { font-size: 1.15rem; font-weight: 700; overflow-wrap: anywhere; }
+.o-bar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+.o-search { flex: 1 1 240px; }
+.o-bar select { min-height: 48px; padding: 8px 12px; border-radius: var(--r-sm); border: 1px solid var(--line); background: var(--surface); color: var(--fg); font: inherit; }
+.o-table-wrap { overflow-x: auto; padding: 0; }
+.o-table { width: 100%; border-collapse: collapse; font-size: .92rem; min-width: 860px; }
+.o-table th { text-align: start; font-weight: 600; color: var(--muted); font-size: .82rem; padding: 12px 14px; border-bottom: 1px solid var(--line); background: var(--surface-2); white-space: nowrap; }
+.o-table td { padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.o-table tr:last-child td { border-bottom: 0; }
+.o-table tbody tr:hover td { background: color-mix(in srgb, var(--ink) 4%, transparent); }
+.o-num, .o-ref { font-family: var(--mono); color: var(--muted); white-space: nowrap; }
+.o-date { white-space: nowrap; }
+.o-hidden { display: block; font-size: .75rem; color: var(--muted); }
+.o-top { display: flex; flex-wrap: wrap; gap: 4px; }
+.o-chip { font-size: .76rem; padding: 2px 8px; border-radius: 999px; color: var(--dc); background: color-mix(in srgb, var(--dc) 12%, transparent); white-space: nowrap; }
+.o-ops { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: nowrap; }
+.o-empty { text-align: center; color: var(--muted); padding: 28px !important; }
+.o-setting { margin-top: 16px; color: var(--muted); }
+.owner-back { margin-bottom: 14px; }
+@media (max-width: 720px) { .o-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+
+/* ================= App shell: sidebar + content pane that fits the window ================= */
+html { height: 100%; box-sizing: border-box; }
+body { height: 100%; overflow: hidden; }
+#app { height: 100%; }
+.shell { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr); grid-template-columns: minmax(0, 1fr); }
+.side { display: flex; flex-direction: row; align-items: center; gap: 18px; padding: 10px max(16px, 3vw); background: var(--surface); border-bottom: 1px solid var(--line); min-width: 0; }
+.side .brand { padding: 2px 0; flex: none; }
+.side-nav { display: flex; flex-direction: row; gap: 4px; margin-inline-start: auto; }
+.side-nav button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px; border: 0; background: none; color: var(--muted); font-weight: 500; font-size: .95rem; white-space: nowrap; }
+.side-nav button:hover { background: var(--surface-2); color: var(--fg); }
+.side-nav button[aria-current="page"] { background: var(--ink); color: var(--ink-fg); }
+.side-foot { display: flex; flex-direction: row; align-items: center; gap: 8px; }
+.owner-link { display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 10px; border: 0; background: none; color: var(--muted); border-radius: 999px; opacity: .3; transition: opacity .2s, background .2s; font-family: "IBM Plex Mono", var(--font); font-size: .72rem; letter-spacing: .04em; direction: ltr; }
+.owner-link:hover, .owner-link:focus-visible, .owner-link.on { opacity: 1; background: var(--surface-2); color: var(--fg); }
+.owner-link .ico { width: 16px; height: 16px; }
+main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
+.pane-in { max-width: 1180px; margin-inline: auto; min-height: 100%; display: flex; flex-direction: column;
+  padding: clamp(18px, 3.2vh, 40px) max(16px, 3vw); }
+.view-landing .pane-in, .view-intro .pane-in, .view-question .pane-in, .view-analyzing .pane-in { justify-content: center; }
+
+/* Landing on one screen */
+.landing { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr); gap: clamp(20px, 3vw, 52px); align-items: center; }
+.land-main { min-width: 0; }
+.brand-title { font-size: clamp(2.3rem, 2.2vw + 3.2vh, 4.4rem); }
+.tagline { font-size: clamp(1.25rem, .9vw + 1.4vh, 1.9rem); }
+.pitch { margin-top: clamp(10px, 2vh, 18px); }
+.landing .cta { margin-top: clamp(14px, 2.6vh, 26px); }
+.feat-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: clamp(12px, 2.4vh, 22px); }
+.feat-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: var(--mint-soft); color: var(--fg); font-size: .85rem; font-weight: 500; }
+.feat-chip .ico { color: var(--mint); }
+.land-side { padding: clamp(14px, 2.4vh, 22px); display: flex; flex-direction: column; gap: clamp(10px, 1.8vh, 16px); min-width: 0; }
+.land-side .method { margin-top: 0; border: 1px solid var(--line); border-radius: var(--r-md); }
+.land-side .stat { padding: 10px 8px; align-items: center; text-align: center; }
+.land-side .stat b { font-size: clamp(1.2rem, .8vw + 1.2vh, 1.7rem); }
+.land-side .unique { margin: 0; font-size: .86rem; text-align: center; }
+.dom-minis { display: flex; flex-direction: column; gap: 8px; }
+.dom-mini { display: flex; align-items: center; gap: 12px; padding: clamp(8px, 1.3vh, 12px) 12px; border-radius: var(--r-md); background: color-mix(in srgb, var(--dc) 8%, var(--surface)); border: 1px solid color-mix(in srgb, var(--dc) 22%, var(--line)); }
+.dom-mini .ic { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: var(--dc); color: var(--surface); flex: none; }
+.dom-mini div { display: flex; flex-direction: column; min-width: 0; line-height: 1.45; }
+.dom-mini b { font-size: .95rem; }
+.dom-mini span { font-size: .8rem; color: var(--muted); }
+
+/* Question fits the window */
+.view-question .st { min-height: clamp(96px, 17vh, 180px); }
+.view-question .progress { margin-bottom: clamp(10px, 2.2vh, 22px); }
+.view-question .scale5 { margin-top: clamp(8px, 1.8vh, 18px); }
+
+/* Results: certificate beside a tabbed panel; only the panel body scrolls */
+.view-results main.pane { overflow: hidden; }
+.view-results .pane-in { height: 100%; max-width: 1320px; padding-block: clamp(14px, 2.4vh, 26px); }
+.res-layout { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(300px, 400px) minmax(0, 1fr); gap: 18px; }
+.res-cert { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
+.res-cert .cert { width: 100%; margin: 0; }
+.res-cert .cert-in { padding: clamp(16px, 3vh, 30px) 14px; gap: 4px; }
+.res-cert .cert-name { font-size: clamp(1.4rem, 1vw + 1.6vh, 2rem); }
+.res-cert .cert-seal { width: clamp(84px, 13vh, 112px); height: clamp(84px, 13vh, 112px); margin: clamp(8px, 1.6vh, 14px) 0 6px; }
+.res-cert .cert-seal b { font-size: clamp(1.6rem, 3.6vh, 2.2rem); }
+.res-cert .cert-top { font-size: 1.25rem; }
+.res-cert .cert-tag { font-size: .9rem; }
+.res-cert .cert-chips { gap: 6px; margin-top: 8px; }
+.res-cert .cert-chip { font-size: .82rem; padding: 4px 10px; }
+.res-cert .cert-meta { margin-top: 10px; padding-top: 10px; }
+.res-panel { min-height: 0; display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+.res-tabs { display: flex; gap: 4px; padding: 10px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.res-tabs button { border: 0; background: none; padding: 8px 16px; border-radius: 999px; font-weight: 600; color: var(--muted); font-size: .95rem; }
+.res-tabs button:hover { background: var(--surface-2); color: var(--fg); }
+.res-tabs button[aria-selected="true"] { background: var(--ink); color: var(--ink-fg); }
+.res-body { flex: 1; min-height: 0; overflow-y: auto; padding: 18px 20px; }
+.res-body .radar-wrap { grid-template-columns: minmax(0, 1fr) 220px; }
+.res-body .radar-wrap svg { max-height: 44vh; }
+.res-body .notices { margin: 0 0 14px; }
+.res-body .complement { padding: 0; background: none; box-shadow: none; border: 0; display: flex; flex-direction: column; gap: 12px; }
+.res-body .complement h2 { font-size: 1.3rem !important; }
+.res-panel .actions { position: static !important; margin: 0; padding: 12px 16px; border-top: 1px solid var(--line); background: var(--surface); display: flex !important; gap: 8px; flex-wrap: wrap; }
+.res-panel .actions .btn { min-height: 44px; flex-direction: row !important; font-size: .92rem !important; padding: 8px 16px !important; border-radius: 999px !important; }
+.owner-back { margin-bottom: 10px; }
+
+@media (max-width: 1000px) {
+  .landing { grid-template-columns: 1fr; }
+  .view-landing .pane-in { justify-content: flex-start; }
+  .view-results main.pane { overflow-y: auto; }
+  .view-results .pane-in { height: auto; }
+  .res-layout { grid-template-columns: 1fr; }
+  .res-body { overflow: visible; }
+  .res-body .radar-wrap { grid-template-columns: 1fr; }
+}
+/* Narrow windows: the labelled tabs move to a second row of the top bar */
+@media (max-width: 820px) {
+  .side { flex-wrap: wrap; row-gap: 8px; gap: 10px; }
+  .side-foot { margin-inline-start: auto; }
+  .side-nav { order: 3; flex-basis: 100%; margin: 0; padding: 4px; border-radius: 999px; background: var(--surface-2); }
+  .side-nav button { flex: 1; justify-content: center; padding: 8px 6px; font-size: .9rem; }
+}
+@media (max-width: 480px) {
+  .side-nav .ico { display: none; }
+}
+
+/* Print/PDF render surface — colours follow the app theme at export time (--p-* set by script) */
+#print-root { position: fixed; top: 0; left: -12000px; width: 688px; z-index: -1; pointer-events: none;
+  --p-bg: #f4f5fa; --p-surface: #ffffff; --p-surface-2: #eceef6; --p-fg: #151832; --p-muted: #595f7d; --p-line: #dfe2ee; --p-ink: #1b1f45;
+  background: var(--p-bg); color: var(--p-fg); font-family: var(--font); font-size: 13px; line-height: 1.7; }
+#print-root .pb { padding: 10px 0 14px; background: var(--p-bg); }
+#print-root .p-title { font-size: 24px; font-weight: 700; }
+#print-root .p-muted { color: var(--p-muted); }
+#print-root .p-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid var(--p-ink); padding-bottom: 10px; }
+#print-root .p-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+#print-root .p-card { background: var(--p-surface); border: 1px solid var(--p-line); border-radius: 12px; padding: 10px; border-top: 4px solid var(--dc); }
+#print-root .p-card b { display: block; font-size: 14px; }
+#print-root .p-card .s { font-size: 18px; font-weight: 700; }
+#print-root .p-h { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+#print-root .p-two { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; }
+#print-root .p-row { display: grid; grid-template-columns: 110px 1fr 30px; gap: 8px; align-items: center; }
+#print-root .p-row .bt { height: 8px; background: var(--p-surface-2); border-radius: 4px; position: relative; overflow: hidden; }
+#print-root .p-row .bt i { position: absolute; inset-block: 0; right: 0; background: var(--dc); border-radius: 4px; }
+#print-root .p-panel { background: var(--p-surface); border: 1px solid var(--p-line); border-radius: 14px; padding: 14px 16px; }
+#print-root .p-sec { background: var(--p-surface); border: 1px solid var(--p-line); border-radius: 14px; padding: 14px 16px; }
+#print-root .p-sec .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--dc); margin-inline-end: 8px; }
+#print-root .p-sec h3 { font-size: 17px; display: flex; justify-content: space-between; }
+#print-root .p-sec h4 { font-size: 13px; margin-top: 8px; color: var(--dc); }
+#print-root .p-sec ul { margin: 2px 0 0; padding-inline-start: 1.2em; }
+#print-root .p-foot { font-size: 10px; color: var(--p-muted); border-top: 1px solid var(--p-line); padding-top: 6px; text-align: center; background: var(--p-bg); }
+#print-root .p-radar { display: grid; grid-template-columns: 300px 1fr; gap: 18px; align-items: center; }
+#print-root .p-radar svg { width: 300px; height: auto; }
+</style>
+<script>(function(){try{var m=JSON.parse(localStorage.getItem("bq.v1.theme"));if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
+</head>
+<body>
+<div id="app" dir="rtl" lang="ar"></div>
+<div id="print-root" dir="rtl" lang="ar" aria-hidden="true"></div>
+<div id="toast-host" class="toast-host" aria-live="polite"></div>
+
+<script>window.VECTOR_CONFIG={api:"https://iupsjfvgbmclhfbgqcie.supabase.co",key:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1cHNqZnZnYm1jbGhmYmdxY2llIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI3NjY0NjAsImV4cCI6MjEwODM0MjQ2MH0.xoeQfqN8qj005s-JpsTBsZ9yjhKw4_IP64nygBMasX0"};</script>
+<script src="lucide.min.js"></script>
+<script src="html2canvas.min.js"></script>
+<script src="jspdf.umd.min.js"></script>
+<script>
+(function (g) {
+  const BQ = (g.BQ = g.BQ || {});
+
+  BQ.DOMAINS = [
+    { id: "exec", name: "التنفيذ", icon: "rocket", desc: "تحويل الأفكار إلى نتائج ملموسة وإنجاز المهام بإتقان." },
+    { id: "inf", name: "التأثير", icon: "megaphone", desc: "تحريك الآخرين وإقناعهم والمبادرة بقيادة الموقف." },
+    { id: "rel", name: "بناء العلاقات", icon: "heart-handshake", desc: "جمع الناس وتقوية الروابط وصناعة فريق متماسك." },
+    { id: "str", name: "التفكير الاستراتيجي", icon: "lightbulb", desc: "تحليل المعلومات واستشراف المستقبل واتخاذ قرارات أذكى." },
+  ];
+
+  BQ.STRENGTHS = [
+    { id: "exec_momentum", domain: "exec", name: "زخم الإنجاز", tagline: "تنهي ما تبدأه وتستمد طاقتك من الإنجاز" },
+    { id: "exec_structure", domain: "exec", name: "هندسة التنظيم", tagline: "تحوّل الفوضى إلى خطة واضحة الخطوات" },
+    { id: "exec_reliability", domain: "exec", name: "الالتزام الموثوق", tagline: "كلمتك عهد، والآخرون يعتمدون عليك" },
+    { id: "exec_precision", domain: "exec", name: "الدقة والجودة", tagline: "ترى التفاصيل التي يغفل عنها غيرك" },
+    { id: "exec_focus", domain: "exec", name: "التركيز الموجّه", tagline: "تعرف الأهم وتمضي إليه دون تشتت" },
+    { id: "inf_initiative", domain: "inf", name: "روح المبادرة", tagline: "تتحرك أولًا وتحوّل النقاش إلى فعل" },
+    { id: "inf_persuasion", domain: "inf", name: "فن الإقناع", tagline: "تكسب التأييد لأفكارك بذكاء ولطف" },
+    { id: "inf_presence", domain: "inf", name: "الحضور القيادي", tagline: "تمسك زمام الموقف حين يغيب التوجيه" },
+    { id: "inf_voice", domain: "inf", name: "التعبير المؤثر", tagline: "تبسّط المعقد وتجعل كلامك يبقى" },
+    { id: "inf_ambition", domain: "inf", name: "السعي للتفوق", tagline: "ترفع السقف وتقيس نفسك بالأرقام" },
+    { id: "rel_empathy", domain: "rel", name: "قراءة المشاعر", tagline: "تفهم ما يشعر به الآخرون قبل أن يقولوه" },
+    { id: "rel_bridge", domain: "rel", name: "بناء الجسور", tagline: "تجد أرضًا مشتركة وسط الاختلاف" },
+    { id: "rel_growth", domain: "rel", name: "تنمية الآخرين", tagline: "ترى الإمكانات في الناس وتساعدها على النمو" },
+    { id: "rel_bond", domain: "rel", name: "العلاقات العميقة", tagline: "تبني ثقة طويلة الأمد مع من حولك" },
+    { id: "rel_inclusion", domain: "rel", name: "روح الفريق", tagline: "تحرص على أن يجد كل فرد مكانه في المجموعة" },
+    { id: "str_vision", domain: "str", name: "استشراف المستقبل", tagline: "ترى ما يمكن أن يكون وتلهم الآخرين به" },
+    { id: "str_analysis", domain: "str", name: "التحليل المنهجي", tagline: "تبحث عن الدليل والسبب الجذري" },
+    { id: "str_learning", domain: "str", name: "شغف التعلّم", tagline: "تتجدد بالمعرفة وتتقن الجديد بسرعة" },
+    { id: "str_ideas", domain: "str", name: "توليد الأفكار", tagline: "تربط بين الأشياء وتبتكر حلولًا جديدة" },
+    { id: "str_pathways", domain: "str", name: "رسم المسارات", tagline: "ترى الطرق البديلة وتتوقع العقبات" },
+  ];
+
+  const Q = {
+    exec_momentum: ["أشعر بالرضا الحقيقي عندما أنهي قائمة مهامي اليومية.", "أبدأ يومي وفي ذهني ما أريد إنجازه قبل نهايته.", "أواصل العمل على المهمة حتى أنهيها حتى لو تأخر الوقت."],
+    exec_structure: ["أحب أن أضع خطة واضحة بخطوات مرتبة قبل البدء في أي عمل.", "أنظّم ملفاتي وأدواتي بطريقة تجعل الوصول إليها سريعًا.", "عندما تتشابك المهام أعيد ترتيبها في جدول أو نظام واضح."],
+    exec_reliability: ["إذا وعدت بإنجاز شيء فإنني أنجزه مهما كانت الظروف.", "أشعر بالمسؤولية الشخصية تجاه نتائج أي عمل أشارك فيه.", "يعتمد عليّ الآخرون عندما يريدون ضمان تنفيذ مهمة في موعدها."],
+    exec_precision: ["ألاحظ الأخطاء الصغيرة التي يغفل عنها الآخرون.", "أراجع عملي أكثر من مرة قبل تسليمه.", "أفضّل تسليم عمل متقن متأخرًا قليلًا على تسليم عمل ناقص في موعده."],
+    exec_focus: ["أعرف بسرعة أي المهام أهم وأبدأ بها.", "أستطيع تجاهل المشتتات والانشغال بهدف واحد لساعات.", "أعتذر عن الطلبات التي تبعدني عن أولوياتي الأساسية."],
+    inf_initiative: ["أفضّل البدء بالتنفيذ على كثرة النقاش والانتظار.", "أكون غالبًا أول من يقترح خطوة عملية عندما يتوقف الفريق.", "لا أنتظر التكليف الرسمي إذا رأيت فرصة تحتاج إلى من يتحرك."],
+    inf_persuasion: ["أستطيع إقناع الآخرين بتغيير رأيهم دون أن يشعروا بالضغط.", "أستمتع بعرض فكرة وكسب تأييد الناس لها.", "أعرف كيف أختار الحجة المناسبة لكل شخص."],
+    inf_presence: ["أتولى زمام الأمور بسهولة عندما يغيب التوجيه.", "لا أتردد في اتخاذ قرار صعب وتحمّل نتائجه.", "أقول رأيي بوضوح حتى لو كان مخالفًا للأغلبية."],
+    inf_voice: ["أستطيع تبسيط الأفكار المعقدة بكلمات يفهمها الجميع.", "أستمتع بالتحدث أمام الجمهور أو تقديم العروض.", "أستخدم القصص والأمثلة لأجعل كلامي يبقى في الأذهان."],
+    inf_ambition: ["أقيس أدائي دائمًا بمؤشرات وأرقام وأسعى لتجاوزها.", "تحفّزني المنافسة وأحب أن أكون في المقدمة.", "أضع لنفسي أهدافًا أعلى مما يتوقعه الآخرون مني."],
+    rel_empathy: ["أشعر بما يمر به الآخرون حتى قبل أن يتحدثوا عنه.", "يلجأ إليّ الناس عندما يحتاجون من يفهمهم.", "ألاحظ تغيّر مزاج زملائي من نبرة صوتهم أو تعابيرهم."],
+    rel_bridge: ["أبحث عن نقاط الاتفاق عندما يختلف الآخرون.", "أنزعج من التوتر داخل الفريق وأسعى لتهدئته.", "أنجح في جمع أطراف مختلفة على حل يرضيهم."],
+    rel_growth: ["يسعدني أن أرى شخصًا يتطور بفضل دعمي وتوجيهي.", "ألاحظ القدرات الكامنة في الآخرين قبل أن يلاحظوها هم.", "أخصص وقتًا لتعليم زملائي حتى لو أبطأ ذلك عملي."],
+    rel_bond: ["أفضّل بضع علاقات قريبة وعميقة على علاقات كثيرة سطحية.", "أبقى على تواصل مع أصدقائي وزملائي القدامى لسنوات.", "أعمل بأفضل حالاتي مع أشخاص أثق بهم وأعرفهم جيدًا."],
+    rel_inclusion: ["أحرص على ألا يشعر أحد بأنه مستبعد في المجموعة.", "أدعو الأشخاص الهادئين إلى المشاركة في النقاش.", "أؤمن بأن نجاح الفريق أهم من نجاح الفرد."],
+    str_vision: ["أتخيل كثيرًا كيف سيبدو المستقبل بعد سنوات وأتحمس له.", "ألهم الآخرين عندما أصف لهم صورة واضحة لما يمكن أن نصل إليه.", "أهتم بالاتجاهات الجديدة وكيف ستغيّر مجال عملي."],
+    str_analysis: ["أحتاج إلى بيانات وأدلة قبل أن أقتنع بأي رأي.", "أبحث عن السبب الجذري للمشكلة بدل علاج أعراضها.", "أستمتع بتفكيك المسائل المعقدة إلى أجزاء صغيرة."],
+    str_learning: ["أستمتع بتعلم أشياء جديدة حتى لو لم أحتجها مباشرة.", "أقرأ أو أشاهد محتوى تعليميًا بشكل منتظم.", "أتحمّس عندما أبدأ مجالًا جديدًا لا أعرف عنه شيئًا."],
+    str_ideas: ["تأتيني أفكار جديدة باستمرار وأربط بين أشياء لا يربطها غيري.", "أحب جلسات العصف الذهني وأساهم فيها بكثرة.", "أملّ من تكرار الطريقة نفسها وأبحث عن طرق مبتكرة."],
+    str_pathways: ["أرى بسرعة عدة طرق للوصول إلى الهدف وأختار أفضلها.", "أتوقع العقبات المحتملة قبل حدوثها وأجهز بدائل لها.", "أفكر في البدائل والاحتمالات قبل اتخاذ أي قرار مهم."],
+  };
+
+  const EXTRA = {
+    "exec_momentum": [
+    "أحب أن أرى أثرًا ملموسًا لعملي في نهاية كل يوم.",
+    "تزداد طاقتي كلما أنجزت مهمة وانتقلت إلى التالية.",
+    "يزعجني أن تبقى الأعمال معلقة دون إنجاز."
+    ],
+    "exec_structure": [
+    "أفضّل أن تكون لكل مهمة خطوات ومواعيد محددة.",
+    "أستمتع بتصميم الجداول والقوائم التي تنظم العمل.",
+    "أرتاح عندما أعرف بدقة من المسؤول عن كل جزء من العمل."
+    ],
+    "exec_reliability": [
+    "أحرص على الوفاء بالمواعيد التي ألتزم بها مهما كانت صغيرة.",
+    "أتحمل نتائج أخطائي دون أن أبحث عن أعذار.",
+    "أتابع ما التزمت به حتى أتأكد من إغلاقه تمامًا."
+    ],
+    "exec_precision": [
+    "أهتم بأن يخرج العمل خاليًا من الأخطاء مهما كانت بسيطة.",
+    "أضع لنفسي معايير جودة أعلى مما يُطلب مني.",
+    "ألاحظ عدم الاتساق في الأرقام والتفاصيل بسرعة."
+    ],
+    "exec_focus": [
+    "أحدد هدفي بوضوح قبل أن أبدأ أي عمل.",
+    "أرتب مهامي حسب أثرها لا حسب سهولتها.",
+    "أعود سريعًا إلى ما أعمل عليه بعد أي مقاطعة."
+    ],
+    "inf_initiative": [
+    "أحب أن أكون أول من يبدأ عندما تتضح الفكرة.",
+    "أفضّل التجربة السريعة على الانتظار حتى تكتمل كل المعلومات.",
+    "أتضايق من الاجتماعات التي تنتهي دون قرار."
+    ],
+    "inf_persuasion": [
+    "أنجح غالبًا في كسب تأييد المترددين لفكرة ما.",
+    "أستمتع بالتفاوض للوصول إلى اتفاق.",
+    "أعرف كيف أحوّل الاعتراض إلى موافقة."
+    ],
+    "inf_presence": [
+    "يلجأ إليّ الآخرون عندما يحتاجون إلى من يحسم الموقف.",
+    "أشعر بالراحة في موقع القيادة.",
+    "أواجه المشكلات مباشرة بدل تجنبها."
+    ],
+    "inf_voice": [
+    "يطلب مني الآخرون صياغة الرسائل والكلمات المهمة.",
+    "أجد الكلمات المناسبة بسهولة لشرح ما أريد.",
+    "أحب أن أروي ما أنجزه الفريق بطريقة تلهم الآخرين."
+    ],
+    "inf_ambition": [
+    "أحب أن أعرف ترتيبي مقارنة بالآخرين.",
+    "يحفزني الوصول إلى رقم أو مستهدف محدد.",
+    "لا أرضى بالأداء المتوسط حتى لو كان مقبولًا."
+    ],
+    "rel_empathy": [
+    "أستطيع أن أضع نفسي مكان الآخرين وأفهم مشاعرهم.",
+    "أفكر في أثر القرار على مشاعر الناس قبل اتخاذه.",
+    "يشاركني الآخرون همومهم دون أن أطلب ذلك."
+    ],
+    "rel_bridge": [
+    "أفضّل الحلول التي يتفق عليها الجميع على الحلول المفروضة.",
+    "أهدّئ النقاش عندما يحتد الخلاف.",
+    "أرى نقاط الالتقاء بين الآراء المتعارضة بسهولة."
+    ],
+    "rel_growth": [
+    "أحتفي بتقدم زملائي حتى لو كان صغيرًا.",
+    "أستمتع بتدريب الآخرين وتوجيههم.",
+    "أرى في كل شخص إمكانات يمكن تنميتها."
+    ],
+    "rel_bond": [
+    "أحرص على معرفة الناس الذين أعمل معهم معرفة عميقة.",
+    "أثق بسرعة في من أعرفهم جيدًا وأعتمد عليهم.",
+    "أحافظ على علاقاتي حتى بعد انتهاء العمل المشترك."
+    ],
+    "rel_inclusion": [
+    "أرحّب بالأعضاء الجدد وأساعدهم على الاندماج.",
+    "أنسب النجاح إلى الفريق كله لا إلى فرد واحد.",
+    "أحرص على أن يُسمع صوت كل فرد في المجموعة."
+    ],
+    "str_vision": [
+    "أحب رسم صورة واضحة لما أريد الوصول إليه بعد سنوات.",
+    "تلهمني الأفكار الطموحة عن المستقبل.",
+    "أفكر كثيرًا في كيف يمكن أن تكون الأمور أفضل مستقبلًا."
+    ],
+    "str_analysis": [
+    "أطرح أسئلة كثيرة قبل أن أقتنع بأي فكرة.",
+    "أعتمد على الأرقام أكثر من الانطباعات في قراراتي.",
+    "أستمتع بالبحث عن الأنماط في البيانات والمعلومات."
+    ],
+    "str_learning": [
+    "أتعلم المهارات الجديدة بسرعة وأستمتع بذلك.",
+    "أجرّب الأدوات والتقنيات الجديدة قبل غيري.",
+    "أشعر بالحيوية عندما أفهم موضوعًا لم أكن أعرفه."
+    ],
+    "str_ideas": [
+    "أجد حلولًا غير مألوفة للمشكلات المعتادة.",
+    "أستمتع بربط أفكار من مجالات مختلفة.",
+    "تأتيني الأفكار الجديدة في أوقات غير متوقعة."
+    ],
+    "str_pathways": [
+    "أضع خطة بديلة لكل خطة أعمل عليها.",
+    "أرى الطريق المختصر للوصول إلى الهدف.",
+    "أفكر في العواقب المحتملة لكل خيار قبل الاختيار."
+    ]
+    };
+
+  // 120 statements: 6 per strength.
+  BQ.STATEMENTS = [];
+  let sid = 1;
+  BQ.STRENGTHS.forEach((s) => {
+    Q[s.id].concat(EXTRA[s.id]).forEach((text, i) => BQ.STATEMENTS.push({ id: sid++, text, strengthId: s.id, idx: i }));
+  });
+
+  // 60 fixed forced-choice pairs. Each strength appears in exactly 6 pairs against 6 different strengths,
+  // at most 2 of them from its own domain. Built deterministically from a fixed seed so every user sees the same pairs.
+  function rng(a) { return function () { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  function buildPairs() {
+    const dom = Object.fromEntries(BQ.STRENGTHS.map((s) => [s.id, s.domain]));
+    for (let attempt = 0; attempt < 5000; attempt++) {
+      const rnd = rng(1447 + attempt * 104729);
+      const stubs = [];
+      BQ.STRENGTHS.forEach((s) => { for (let k = 0; k < 6; k++) stubs.push(s.id); });
+      for (let i = stubs.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [stubs[i], stubs[j]] = [stubs[j], stubs[i]]; }
+      const used = new Set(), same = {}, pairs = [];
+      let ok = true;
+      while (stubs.length) {
+        const a = stubs.shift();
+        const opts = [];
+        stubs.forEach((b, j) => {
+          if (b === a || used.has([a, b].sort().join("|"))) return;
+          if (dom[a] === dom[b] && ((same[a] || 0) >= 2 || (same[b] || 0) >= 2)) return;
+          opts.push(j);
+        });
+        if (!opts.length) { ok = false; break; }
+        const j = opts[Math.floor(rnd() * opts.length)];
+        const b = stubs.splice(j, 1)[0];
+        used.add([a, b].sort().join("|"));
+        if (dom[a] === dom[b]) { same[a] = (same[a] || 0) + 1; same[b] = (same[b] || 0) + 1; }
+        pairs.push([a, b]);
+      }
+      if (!ok) continue;
+      const next = {};
+      const pick = (s) => { const i = next[s] || 0; next[s] = i + 1; return BQ.STATEMENTS.find((x) => x.strengthId === s && x.idx === i).id; };
+      return pairs.map(([a, b], i) => ({ id: i + 1, a: pick(a), b: pick(b) }));
+    }
+    throw new Error("pairs");
+  }
+  BQ.PAIRS = buildPairs();
+  BQ.ITEM_SECONDS = 20;
+
+  BQ.DOMAIN_BY_ID = Object.fromEntries(BQ.DOMAINS.map((d) => [d.id, d]));
+  BQ.STRENGTH_BY_ID = Object.fromEntries(BQ.STRENGTHS.map((s) => [s.id, s]));
+  BQ.ST_BY_ID = Object.fromEntries(BQ.STATEMENTS.map((x) => [x.id, x]));
+  BQ.PAIR_BY_ID = Object.fromEntries(BQ.PAIRS.map((p) => [p.id, p]));
+
+  // Bipolar 5-point scale between statement A and statement B.
+  BQ.PAIR_SCALE = [
+    { v: 1, label: "أ تصفني تمامًا", short: "أ تمامًا" },
+    { v: 2, label: "أ أقرب إليّ", short: "أقرب لـ أ" },
+    { v: 3, label: "محايد", short: "محايد" },
+    { v: 4, label: "ب أقرب إليّ", short: "أقرب لـ ب" },
+    { v: 5, label: "ب تصفني تمامًا", short: "ب تمامًا" },
+  ];
+})(typeof window !== "undefined" ? window : globalThis);
+(function (g) {
+  const BQ = (g.BQ = g.BQ || {});
+
+  BQ.CONTENT = {
+    exec_momentum: {
+      summary: "تستمد طاقتك من رؤية العمل يتقدم ويكتمل. كل مهمة منجزة تمنحك دفعة للمهمة التالية، ولا تهدأ حتى ترى نتيجة ملموسة لجهدك في نهاية اليوم.",
+      howItShows: ["تبدأ يومك بقائمة واضحة وتشعر بالارتياح مع كل بند تشطبه.", "تحافظ على وتيرة عمل ثابتة حتى في الأيام المزدحمة.", "تنزعج من الأعمال المعلقة التي لا تصل إلى نهاية."],
+      taskManagement: ["قسّم أهدافك الكبيرة إلى إنجازات يومية صغيرة يمكن شطبها.", "ابدأ يومك بمهمة سريعة تمنحك الزخم، ثم انتقل إلى المهمة الأصعب.", "سجّل إنجازاتك أسبوعيًا لترى التقدم المتراكم بوضوح."],
+      atWork: ["المشاريع ذات المخرجات الواضحة والمواعيد المحددة.", "مراحل التنفيذ المكثف بعد اعتماد الخطط.", "الأدوار التي تحتاج إنتاجية عالية ومتابعة مستمرة."],
+      teamRole: "أنت من يحافظ على حركة الفريق ويضمن أن العمل لا يتوقف.",
+      blindSpots: ["قد تنشغل بكمية الإنجاز على حساب أهميته؛ راجع أولوياتك قبل أن تبدأ.", "قد تجد صعوبة في التوقف والراحة؛ اجعل الاستراحة جزءًا من خطتك اليومية."],
+      partners: ["str_pathways", "rel_empathy"],
+      actionPlan: ["اكتب كل صباح ثلاث مهام إذا أنجزتها عددت يومك ناجحًا.", "أنهِ مهمة معلقة منذ أكثر من أسبوع.", "خصص نهاية الأسبوع لمراجعة ما أنجزته وما يستحق الأولوية القادمة."],
+    },
+    exec_structure: {
+      summary: "تميل بطبيعتك إلى تحويل الأفكار والمهام المتداخلة إلى نظام واضح بخطوات مرتبة. تشعر بالراحة عندما تعرف ما الذي سيحدث ومتى ومن المسؤول عنه، وتساعد من حولك على العمل بهدوء ووضوح.",
+      howItShows: ["تبدأ أي مشروع بتقسيمه إلى مراحل ومهام ومواعيد.", "تنزعج من الاجتماعات التي تنتهي دون قرارات أو مسؤوليات محددة.", "تبني لنفسك قوائم وقوالب تعيد استخدامها."],
+      taskManagement: ["خصص 15 دقيقة في بداية كل أسبوع لتوزيع المهام على الأيام حسب الأولوية.", "حوّل كل مهمة كبيرة إلى مهام فرعية لا تتجاوز الواحدة منها ساعتين.", "استخدم لوحة مهام بثلاثة أعمدة: قيد الانتظار، قيد التنفيذ، منجز."],
+      atWork: ["إدارة المشاريع وتنسيق الفعاليات.", "بناء الإجراءات والسياسات وأدلة العمل.", "تنظيم مرحلة الإطلاق أو الانتقال إلى نظام جديد."],
+      teamRole: "أنت من يحوّل حماس الفريق إلى خطة قابلة للتنفيذ.",
+      blindSpots: ["قد تتمسك بالخطة حتى عندما تتغير الظروف؛ اجعل في خطتك مساحة للمراجعة.", "قد يشعر بعض الزملاء بأن التفاصيل الكثيرة تقيّدهم؛ اتفق معهم على الحد الأدنى من التنظيم."],
+      partners: ["str_ideas", "inf_initiative"],
+      actionPlan: ["اختر مشروعًا متعثرًا واكتب له خطة من صفحة واحدة.", "صمّم قالبًا لمتابعة مهام فريقك وشاركه معهم.", "راجع جدولك هذا الأسبوع واحذف مهمة واحدة لا تخدم أولوياتك."],
+    },
+    exec_reliability: {
+      summary: "تتعامل مع وعودك بوصفها التزامًا لا يقبل التهاون. يشعر من حولك بالطمأنينة حين تتولى أمرًا ما، لأنهم يعرفون أنه سيُنجز كما اتُّفق عليه.",
+      howItShows: ["تتحمل مسؤولية النتائج ولا تبحث عن أعذار عند حدوث الخطأ.", "تتابع التفاصيل حتى تتأكد من إغلاق كل ما التزمت به.", "تنزعج عندما لا يلتزم الآخرون بما وعدوا به."],
+      taskManagement: ["لا تقبل مهمة جديدة قبل أن تتأكد من قدرتك على الوفاء بها في موعدها.", "اكتب كل التزام فور قبوله مع موعده والجهة المستفيدة منه.", "أبلغ مبكرًا عن أي تأخير متوقع مع موعد بديل واضح."],
+      atWork: ["المهام الحساسة التي لا تحتمل الخطأ أو التأخير.", "إدارة العلاقة مع المستفيدين والجهات الشريكة.", "متابعة الامتثال والاتفاقيات والتعهدات."],
+      teamRole: "أنت الضمانة التي يعتمد عليها الفريق في المهام الحرجة.",
+      blindSpots: ["قد تقبل التزامات أكثر من طاقتك خوفًا من خذلان الآخرين؛ تعلّم الاعتذار المبكر.", "قد تتولى أعمال غيرك لضمان إنجازها؛ امنحهم فرصة تحمّل مسؤولياتهم."],
+      partners: ["inf_voice", "str_ideas"],
+      actionPlan: ["راجع قائمة التزاماتك الحالية واعتذر بلطف عن التزام لا تستطيع الوفاء به جيدًا.", "اتفق مع زميل على موعد تسليم واضح والتزم به أمام الفريق.", "حدد مهمة تتولاها عن غيرك وأعدها إلى صاحبها مع دعمك له."],
+    },
+    exec_precision: {
+      summary: "ترى ما يغفل عنه الآخرون من أخطاء صغيرة وتفاصيل دقيقة. تؤمن بأن جودة العمل تظهر في تفاصيله، ولا ترضى بتسليم ما لا يرقى إلى المستوى الذي تريده.",
+      howItShows: ["تلاحظ الخطأ المطبعي أو الرقم غير المتسق من النظرة الأولى.", "تراجع عملك أكثر من مرة قبل تسليمه.", "تضع لنفسك معايير أعلى مما هو مطلوب منك."],
+      taskManagement: ["خصص وقتًا ثابتًا للمراجعة في جدولك بدل تأجيلها إلى اللحظة الأخيرة.", "أعدّ قائمة تحقق قصيرة لكل نوع من المهام المتكررة.", "حدد مستوى الجودة المطلوب لكل مهمة قبل البدء حتى لا تبالغ في المهام البسيطة."],
+      atWork: ["مراجعة التقارير والعقود والمستندات الرسمية.", "ضبط الجودة وتدقيق البيانات والأرقام.", "إعداد المخرجات النهائية قبل اعتمادها أو نشرها."],
+      teamRole: "أنت خط الدفاع الأخير الذي يمنع الأخطاء من الوصول إلى الخارج.",
+      blindSpots: ["قد يؤخر سعيك إلى الكمال تسليم العمل؛ فرّق بين ما يجب إتقانه وما يكفي إنجازه.", "قد تبدو ملاحظاتك الكثيرة نقدًا للآخرين؛ ابدأ بما أحسنوا فيه ثم قدّم الأهم."],
+      partners: ["inf_initiative", "str_vision"],
+      actionPlan: ["صمّم قائمة تحقق من خمسة بنود لأكثر مهمة تتكرر في عملك.", "سلّم مهمة واحدة هذا الأسبوع بمستوى «جيد بما يكفي» ولاحظ النتيجة.", "اعرض على زميل مراجعة عمله بأسلوب داعم ومحدد."],
+    },
+    exec_focus: {
+      summary: "تعرف بسرعة ما الذي يستحق وقتك وما الذي يمكن تأجيله. تمضي نحو هدفك بثبات، وتساعد من حولك على الابتعاد عن المشتتات والتركيز على ما يصنع الفرق.",
+      howItShows: ["تسأل دائمًا عن الهدف قبل أن تبدأ أي عمل.", "تعمل لساعات متواصلة على مهمة واحدة دون أن تتشتت.", "تعتذر عن الاجتماعات والطلبات التي لا تخدم أولوياتك."],
+      taskManagement: ["رتّب مهامك يوميًا حسب أثرها، وابدأ بالمهمة الأعلى أثرًا.", "احجز فترات تركيز عميق في تقويمك وأغلق التنبيهات خلالها.", "حدد لكل أسبوع هدفًا رئيسيًا واحدًا وقِس عليه كل مهمة جديدة."],
+      atWork: ["المشاريع ذات الأهداف المحددة والمؤشرات الواضحة.", "المهام التي تحتاج عملًا عميقًا وتركيزًا طويلًا.", "قيادة الفرق في فترات الضغط وكثرة الطلبات."],
+      teamRole: "أنت البوصلة التي تعيد الفريق إلى الهدف كلما انشغل بغيره.",
+      blindSpots: ["قد تتجاهل طلبات الآخرين فتبدو غير متعاون؛ وضّح لهم سبب أولوياتك.", "قد تمضي في طريقك رغم تغيّر الظروف؛ راجع اتجاهك دوريًا."],
+      partners: ["rel_bridge", "str_learning"],
+      actionPlan: ["احجز ساعتين للتركيز العميق في ثلاثة أيام من هذا الأسبوع.", "اكتب هدف الأسبوع الرئيسي في مكان تراه يوميًا.", "اعتذر عن اجتماع أو طلب واحد لا يخدم هذا الهدف."],
+    },
+    inf_initiative: {
+      summary: "تؤمن بأن الخطوة الأولى أهم من النقاش الطويل. تتحرك حين يتردد غيرك، وتحوّل الأفكار إلى أفعال، فتمنح الفريق دفعة تخرجه من حالة الانتظار.",
+      howItShows: ["تقترح خطوة عملية فور انتهاء النقاش.", "تبدأ التجربة قبل أن تكتمل كل المعلومات.", "تشعر بالضيق من الاجتماعات التي تنتهي دون قرار."],
+      taskManagement: ["حوّل كل فكرة إلى خطوة أولى يمكن تنفيذها خلال 24 ساعة.", "ابدأ المشاريع بنسخة تجريبية صغيرة ثم طوّرها بالتدريج.", "ضع موعدًا نهائيًا للنقاش يعقبه قرار وتنفيذ."],
+      atWork: ["إطلاق المبادرات والمشاريع الجديدة.", "تجاوز الجمود في المشاريع المتعثرة.", "المواقف التي تحتاج استجابة سريعة."],
+      teamRole: "أنت من يطلق شرارة البداية ويحوّل الكلام إلى حركة.",
+      blindSpots: ["قد تبدأ قبل أن تتضح الصورة؛ خذ دقائق لتحديد المخاطر الأساسية قبل الانطلاق.", "قد تبدأ أعمالًا كثيرة دون إكمالها؛ اربط كل بداية بشخص يتابع إنجازها."],
+      partners: ["exec_structure", "str_analysis"],
+      actionPlan: ["اختر فكرة مؤجلة ونفّذ خطوتها الأولى خلال يومين.", "اقترح في الاجتماع القادم قرارًا محددًا وموعدًا لتنفيذه.", "ابحث عن شريك منظم يتابع معك مبادرة واحدة حتى نهايتها."],
+    },
+    inf_persuasion: {
+      summary: "تملك قدرة على كسب تأييد الناس لأفكارك دون ضغط أو مواجهة. تقرأ ما يهم كل شخص وتخاطبه بالحجة التي تناسبه، فتتحول الاعتراضات بين يديك إلى موافقات.",
+      howItShows: ["تستمتع بعرض فكرة جديدة على جمهور متردد.", "تختار أسلوبًا مختلفًا في الإقناع حسب الشخص الذي أمامك.", "يُطلب منك غالبًا تمثيل الفريق في التفاوض أو العروض."],
+      taskManagement: ["حدد مبكرًا أصحاب القرار في كل مهمة وما يهم كلًا منهم.", "جهّز حجة مختصرة لكل مقترح قبل عرضه.", "استثمر قدرتك في تذليل العوائق مع الإدارات الأخرى بدل انتظارها."],
+      atWork: ["التفاوض مع الشركاء والجهات الداعمة.", "عرض المقترحات وكسب الموافقات.", "إدارة التغيير وإقناع الفرق بأساليب عمل جديدة."],
+      teamRole: "أنت صوت الفريق حين يحتاج إلى كسب التأييد والموافقة.",
+      blindSpots: ["قد يجعلك حماسك للإقناع تتحدث أكثر مما تستمع؛ اسأل قبل أن تقنع.", "قد يرى البعض أسلوبك ضغطًا خفيًا؛ احترم حقهم في الرفض."],
+      partners: ["str_analysis", "exec_reliability"],
+      actionPlan: ["اختر مقترحًا معطلًا وأعد صياغته وفق ما يهم صاحب القرار.", "استمع في نقاشك القادم إلى ثلاثة اعتراضات كاملة قبل أن ترد.", "دوّن الحجج التي نجحت معك هذا الشهر لتستفيد منها لاحقًا."],
+    },
+    inf_presence: {
+      summary: "تتولى زمام الأمور بسهولة حين يغيب التوجيه أو يتردد الآخرون. لا تخشى القرارات الصعبة، وتعبّر عن رأيك بوضوح، فيشعر من حولك بالاتجاه والثقة.",
+      howItShows: ["تتحرك لملء الفراغ عندما لا يوجد من يقود.", "تتخذ القرار وتتحمل نتائجه دون تردد طويل.", "تقول رأيك بصراحة حتى لو كان مخالفًا للأغلبية."],
+      taskManagement: ["حدد بوضوح من المسؤول عن كل مهمة وموعدها في أول اجتماع.", "اتخذ القرارات المعلقة في موعد محدد بدل تركها مفتوحة.", "استخدم حضورك لإزالة العوائق التي تؤخر الفريق."],
+      atWork: ["قيادة الفرق والمشاريع في المراحل الصعبة.", "إدارة الأزمات والمواقف الطارئة.", "المواقف التي تحتاج قرارًا حاسمًا ومواجهة مباشرة."],
+      teamRole: "أنت من يتقدم الصفوف حين يحتاج الفريق إلى قرار وقائد.",
+      blindSpots: ["قد يبدو حسمك تسلطًا على الآخرين؛ اشرح أسباب قراراتك وأشركهم فيها.", "قد تهيمن على النقاش دون قصد؛ اترك مساحة للأصوات الأهدأ."],
+      partners: ["rel_empathy", "rel_inclusion"],
+      actionPlan: ["حدد قرارًا معلقًا في فريقك واتخذه هذا الأسبوع مع شرح أسبابه.", "اسأل زميلين عن رأيهما قبل أن تطرح رأيك في الاجتماع القادم.", "تطوع لقيادة مهمة لا يتحمس لها أحد."],
+    },
+    inf_voice: {
+      summary: "تجيد تحويل الأفكار المعقدة إلى كلمات بسيطة وقصص يتذكرها الناس. حين تتحدث يصغي الآخرون، وحين تكتب تصل رسالتك بوضوح وتأثير.",
+      howItShows: ["تستخدم القصص والأمثلة لتوضيح أفكارك.", "يطلب منك الزملاء صياغة الرسائل والعروض المهمة.", "تستمتع بالحديث أمام الجمهور أو تقديم الورش."],
+      taskManagement: ["ابدأ كل مشروع بكتابة رسالته الأساسية في جملة واحدة.", "اختصر تحديثات المهام في نقاط واضحة يفهمها الجميع.", "حوّل الخطط المعقدة إلى عرض قصير يسهّل اتخاذ القرار."],
+      atWork: ["إعداد العروض التقديمية والكلمات الرسمية.", "كتابة المحتوى والرسائل الإعلامية والتسويقية.", "التدريب ونقل المعرفة وتقديم الورش."],
+      teamRole: "أنت من يحوّل عمل الفريق إلى قصة تصل إلى الآخرين.",
+      blindSpots: ["قد تهتم بجمال العبارة أكثر من دقة المضمون؛ تأكد من الحقائق قبل الصياغة.", "قد تأخذ مساحة الحديث كلها؛ امنح الآخرين فرصة للتعبير."],
+      partners: ["str_analysis", "exec_precision"],
+      actionPlan: ["أعد كتابة رسالة أو تقرير معقد في نصف حجمه دون أن تفقد المعنى.", "احكِ في الاجتماع القادم قصة نجاح قصيرة لعمل الفريق.", "تطوع لتقديم عرض أو ورشة قصيرة في مجال تتقنه."],
+    },
+    inf_ambition: {
+      summary: "ترفع السقف باستمرار وتقيس نفسك بالأرقام والنتائج. تحفزك المنافسة وتدفعك لتجاوز ما أنجزته بالأمس، وتنقل هذه الروح إلى من يعمل معك.",
+      howItShows: ["تتابع مؤشرات أدائك وتقارنها بأهدافك باستمرار.", "تتحمس حين تعرف أن هناك منافسة أو تصنيفًا.", "تضع أهدافًا أعلى مما يُطلب منك."],
+      taskManagement: ["حوّل كل هدف إلى مؤشر رقمي يمكن قياسه أسبوعيًا.", "قارن أداءك بأفضل أداء سابق لك، لا بأداء الآخرين فقط.", "ضع لكل مشروع هدفًا طموحًا وآخر أساسيًا لتوازن بين الطموح والواقعية."],
+      atWork: ["الأدوار المرتبطة بمستهدفات وأرقام واضحة.", "تنمية الموارد والمبيعات وتحقيق المستهدفات.", "المشاريع التنافسية والجوائز والمسابقات."],
+      teamRole: "أنت من يرفع سقف الطموح ويدفع الفريق إلى نتائج أفضل.",
+      blindSpots: ["قد تتحول المنافسة مع الزملاء إلى توتر؛ اجعل المنافسة مع الهدف لا مع الأشخاص.", "قد يحبطك عدم الوصول إلى الرقم المطلوب؛ احتفل بالتقدم أيضًا."],
+      partners: ["rel_bridge", "rel_growth"],
+      actionPlan: ["اختر مؤشرًا واحدًا في عملك وحدد رقمك الحالي وهدفك بعد شهر.", "شارك فريقك هدفًا جماعيًا قابلًا للقياس هذا الأسبوع.", "احتفل بإنجاز صغير تحقق حتى لو لم يصل إلى الهدف الكامل."],
+    },
+    rel_empathy: {
+      summary: "تلتقط ما يشعر به الآخرون من نبرة الصوت وتعابير الوجه قبل أن يتحدثوا. يجد الناس عندك الفهم والأمان، فيلجؤون إليك حين يحتاجون من يصغي إليهم.",
+      howItShows: ["تلاحظ تغيّر مزاج زملائك بسرعة.", "يشاركك الآخرون همومهم دون أن تطلب ذلك.", "تفكر في أثر القرار على مشاعر الناس قبل اتخاذه."],
+      taskManagement: ["راعِ طاقة الفريق عند توزيع المهام وتحديد المواعيد.", "افتح كل اجتماع متابعة بسؤال قصير عن حال الفريق.", "التقط مبكرًا علامات الإرهاق أو الإحباط وعالجها قبل أن تؤثر في الإنجاز."],
+      atWork: ["خدمة المستفيدين وتقديم الدعم والرعاية.", "الموارد البشرية والإرشاد وتحسين بيئة العمل.", "التعامل مع المواقف الحساسة والشكاوى."],
+      teamRole: "أنت من يشعر بنبض الفريق ويحفظ روحه المعنوية.",
+      blindSpots: ["قد تتأثر بمشاعر الآخرين حتى ترهقك؛ ضع حدودًا تحمي طاقتك.", "قد تتجنب القرارات التي تزعج الآخرين؛ تذكّر أن الوضوح نوع من الرعاية."],
+      partners: ["exec_focus", "inf_presence"],
+      actionPlan: ["اسأل زميلًا بدا متعبًا عن حاله واستمع دون تقديم حلول.", "حدد وقتًا يوميًا قصيرًا لاستعادة طاقتك بعيدًا عن هموم الآخرين.", "قدّم ملاحظة صعبة مؤجلة بأسلوب صادق ولطيف."],
+    },
+    rel_bridge: {
+      summary: "تبحث دائمًا عن الأرض المشتركة بين الآراء المختلفة. تخفف التوتر وتقرّب المسافات، وتنجح في جمع الأطراف على حلول يشعر الجميع بأنها تمثلهم.",
+      howItShows: ["تتدخل لتهدئة النقاش حين يحتد الخلاف.", "تلاحظ نقاط الاتفاق التي يغفل عنها المختلفون.", "تفضّل الحلول التوافقية على الحلول المفروضة."],
+      taskManagement: ["اجمع آراء الأطراف المعنية مبكرًا قبل أن تتحول إلى اعتراضات.", "صغ القرارات بلغة تبرز المصلحة المشتركة.", "ضع آلية واضحة لحل الخلافات قبل بدء المشاريع المشتركة."],
+      atWork: ["الشراكات والعمل مع جهات متعددة.", "الوساطة وحل الخلافات داخل الفرق.", "المشاريع التي تجمع إدارات أو تخصصات مختلفة."],
+      teamRole: "أنت الجسر الذي يصل بين الآراء ويحفظ تماسك الفريق.",
+      blindSpots: ["قد تتجنب الخلاف الضروري حفاظًا على الهدوء؛ بعض الخلافات تصنع قرارات أفضل.", "قد تقبل حلولًا وسطًا ضعيفة لإرضاء الجميع؛ تأكد أن الحل يحقق الهدف فعلًا."],
+      partners: ["inf_presence", "exec_focus"],
+      actionPlan: ["حدد خلافًا قائمًا واكتب ثلاث نقاط يتفق عليها الطرفان.", "رتّب لقاءً قصيرًا بين زميلين أو إدارتين يتعثر التنسيق بينهما.", "عبّر في نقاش قادم عن رأيك المخالف بهدوء بدل الصمت."],
+    },
+    rel_growth: {
+      summary: "ترى في الناس إمكانات لم تظهر بعد، وتسعد حين تراهم يتقدمون بفضل دعمك. تمنح وقتك للتعليم والتوجيه، وتعدّ نجاح من حولك جزءًا من نجاحك.",
+      howItShows: ["تلاحظ تقدم زملائك وتحتفي به.", "تخصص وقتًا لشرح ما تعرفه لغيرك.", "تكتشف نقاط قوة الآخرين قبل أن يكتشفوها."],
+      taskManagement: ["وزّع المهام بما يتيح لكل فرد فرصة للتعلم والنمو.", "رافق المهام الجديدة بإرشاد قصير ومتابعة، لا بتنفيذها نيابة عنهم.", "خصص في جدولك وقتًا ثابتًا للتوجيه حتى لا يستهلك وقت عملك."],
+      atWork: ["التدريب والإرشاد وبناء القدرات.", "قيادة الفرق الناشئة واستقبال الموظفين الجدد.", "برامج التطوع والتمكين والتأهيل."],
+      teamRole: "أنت من يكتشف المواهب في الفريق ويساعدها على الظهور.",
+      blindSpots: ["قد تستمر في دعم من لا يرغب في التطور؛ وجّه جهدك لمن يبادر.", "قد تهمل تطوير نفسك وأنت منشغل بغيرك؛ ضع لنفسك هدفًا للتعلم أيضًا."],
+      partners: ["inf_ambition", "exec_structure"],
+      actionPlan: ["اختر زميلًا وأخبره بنقطة قوة لاحظتها فيه بمثال محدد.", "فوّض مهمة اعتدت تنفيذها إلى شخص يحتاج إلى تجربتها مع إرشادك.", "حدد مهارة تريد تطويرها لنفسك هذا الشهر."],
+    },
+    rel_bond: {
+      summary: "تبني علاقات قائمة على الثقة والمعرفة العميقة، وتحافظ عليها لسنوات. تعمل بأفضل حالاتك مع من تثق بهم، ويقدّر الآخرون صدقك ووفاءك.",
+      howItShows: ["تفضّل عددًا محدودًا من العلاقات القريبة على علاقات كثيرة سطحية.", "تبقى على تواصل مع زملاء وأصدقاء قدامى.", "يعتمد عليك المقربون في الأوقات الصعبة."],
+      taskManagement: ["كوّن فريقًا صغيرًا موثوقًا للمهام الحساسة والمعقدة.", "خصص وقتًا منتظمًا للتواصل مع شركاء العمل الرئيسيين.", "استثمر الثقة المتبادلة في تسريع القرارات وتقليل الإجراءات."],
+      atWork: ["إدارة العلاقات طويلة الأمد مع الشركاء والداعمين.", "العمل في فرق صغيرة متماسكة.", "الأدوار التي تحتاج إلى السرية والثقة."],
+      teamRole: "أنت من يبني الثقة التي تجعل الفريق يعمل بأمان وصراحة.",
+      blindSpots: ["قد تتردد في الانفتاح على أشخاص جدد؛ امنح الوافدين فرصة للاقتراب.", "قد تتغاضى عن أخطاء المقربين؛ الصراحة جزء من العلاقة العميقة."],
+      partners: ["inf_initiative", "str_vision"],
+      actionPlan: ["تواصل مع شريك عمل أو زميل قديم لم تتحدث معه منذ مدة.", "خصص وقتًا للتعرف على زميل جديد في فريقك.", "قدّم ملاحظة صادقة لشخص مقرب بطريقة داعمة."],
+    },
+    rel_inclusion: {
+      summary: "تحرص على أن يشعر كل فرد بأنه جزء من المجموعة وأن صوته مسموع. تؤمن بأن نجاح الفريق أهم من نجاح الفرد، وتجعل من حولك يشعرون بالانتماء.",
+      howItShows: ["تدعو الأشخاص الهادئين إلى المشاركة في النقاش.", "تلاحظ من يشعر بأنه مستبعد وتقترب منه.", "تنسب النجاح إلى الفريق كله."],
+      taskManagement: ["أشرك جميع المعنيين في التخطيط حتى يلتزموا بالتنفيذ.", "تأكد من وضوح دور كل فرد في المهام المشتركة.", "احتفِ بإنجازات الفريق علنًا لتعزيز الالتزام الجماعي."],
+      atWork: ["بناء الفرق الجديدة ودمج الموظفين.", "العمل التطوعي والمجتمعي.", "المشاريع التي تحتاج تعاونًا واسعًا بين أطراف متعددة."],
+      teamRole: "أنت من يجعل كل فرد يشعر بأن له مكانًا ودورًا في الفريق.",
+      blindSpots: ["قد يبطئ حرصك على إشراك الجميع اتخاذ القرار؛ حدد متى يكفي التشاور.", "قد تتنازل عن رأيك من أجل الانسجام؛ رأيك جزء من الفريق أيضًا."],
+      partners: ["inf_presence", "exec_focus"],
+      actionPlan: ["اسأل في الاجتماع القادم عضوًا لم يتحدث عن رأيه.", "عرّف زميلًا جديدًا ببقية الفريق وطريقة العمل.", "اشكر الفريق علنًا على إنجاز مشترك هذا الأسبوع."],
+    },
+    str_vision: {
+      summary: "ترى ما يمكن أن يكون قبل أن يراه الآخرون. تتحمس للصورة المستقبلية، وتلهم من حولك حين تصف لهم إلى أين يمكن أن يصلوا.",
+      howItShows: ["تتخيل كيف سيبدو عملك أو مؤسستك بعد سنوات.", "تتابع الاتجاهات الجديدة وتفكر في أثرها.", "يتحمس الناس حين تحدثهم عن الطموحات الكبيرة."],
+      taskManagement: ["اربط مهامك اليومية بالصورة البعيدة حتى تبقى ذات معنى.", "اكتب رؤية قصيرة لكل مشروع قبل تحديد مهامه.", "خصص وقتًا شهريًا لمراجعة الاتجاهات وتحديث أولوياتك وفقها."],
+      atWork: ["التخطيط الاستراتيجي ورسم الرؤى.", "تطوير المبادرات والخدمات الجديدة.", "إلهام الفرق في مراحل التحول والتغيير."],
+      teamRole: "أنت من يرسم للفريق صورة المستقبل التي تستحق العمل من أجلها.",
+      blindSpots: ["قد تنشغل بالمستقبل على حساب متطلبات اليوم؛ حوّل رؤيتك إلى خطوات قريبة.", "قد يرى البعض أفكارك بعيدة عن الواقع؛ ادعمها بأمثلة وأرقام."],
+      partners: ["exec_structure", "exec_momentum"],
+      actionPlan: ["اكتب في فقرة واحدة كيف تريد أن يبدو عملك بعد ثلاث سنوات.", "اختر خطوة واحدة هذا الأسبوع تقربك من هذه الصورة.", "شارك رؤيتك مع زميل منظم واطلب منه مساعدتك في تحويلها إلى خطة."],
+    },
+    str_analysis: {
+      summary: "لا تقتنع إلا بالدليل، وتبحث عن السبب الجذري لا عن الأعراض. تفكك المسائل المعقدة إلى أجزاء واضحة، فتساعد من حولك على اتخاذ قرارات مبنية على حقائق.",
+      howItShows: ["تسأل «ما الدليل؟» قبل أن تقبل أي رأي.", "تحلل الأرقام والبيانات لتفهم ما وراءها.", "تتتبع المشكلة حتى تصل إلى سببها الحقيقي."],
+      taskManagement: ["حدد مؤشرات النجاح قبل بدء المهمة لتقيس النتائج بموضوعية.", "استخدم البيانات لترتيب أولوياتك بدل الانطباعات.", "حلل أسباب تعثر المهام المتأخرة قبل وضع خطة جديدة."],
+      atWork: ["تحليل البيانات وإعداد التقارير.", "تقييم المشاريع وقياس الأثر.", "دراسة المشكلات المعقدة واقتراح الحلول."],
+      teamRole: "أنت من يختبر الأفكار ويضمن أن قرارات الفريق مبنية على أساس متين.",
+      blindSpots: ["قد يؤخر طلبك المزيد من البيانات اتخاذ القرار؛ حدد متى تكفي المعلومات المتاحة.", "قد يبدو تحليلك الناقد تقليلًا من أفكار الآخرين؛ ابدأ بما يصلح فيها."],
+      partners: ["inf_voice", "inf_initiative"],
+      actionPlan: ["اختر مشكلة متكررة في عملك واسأل «لماذا؟» خمس مرات حتى تصل إلى سببها الجذري.", "أعدّ لوحة مؤشرات بسيطة لمشروع تعمل عليه.", "اتخذ قرارًا هذا الأسبوع بالمعلومات المتاحة دون انتظار المزيد."],
+    },
+    str_learning: {
+      summary: "تتجدد طاقتك حين تتعلم شيئًا جديدًا، وتستمتع برحلة التعلم نفسها. تتقن المجالات الجديدة بسرعة، وتنقل ما تعلمته إلى من حولك.",
+      howItShows: ["تقرأ وتتابع محتوى تعليميًا بانتظام.", "تتحمس للمشاريع التي تتطلب مهارات جديدة.", "تجرب الأدوات والتقنيات الحديثة قبل غيرك."],
+      taskManagement: ["حوّل المهام الجديدة إلى فرص تعلم مقصودة بأهداف واضحة.", "خصص وقتًا أسبوعيًا ثابتًا للتعلم المرتبط بعملك.", "وثّق ما تتعلمه في دليل قصير يستفيد منه الفريق."],
+      atWork: ["المشاريع الجديدة والمجالات غير المألوفة.", "التحول الرقمي وتبني الأدوات الحديثة.", "البحث والتطوير وبناء المعرفة المؤسسية."],
+      teamRole: "أنت من يجلب للفريق المعرفة الجديدة ويسرّع تعلمه.",
+      blindSpots: ["قد تنتقل إلى موضوع جديد قبل تطبيق ما تعلمته؛ اربط كل تعلم بتطبيق عملي.", "قد تستمتع بالتعلم أكثر من الإنجاز؛ حدد نتيجة ملموسة لكل ما تتعلمه."],
+      partners: ["exec_focus", "exec_momentum"],
+      actionPlan: ["اختر مهارة واحدة مرتبطة بعملك وخصص لها ساعتين هذا الأسبوع.", "طبّق شيئًا تعلمته مؤخرًا في مهمة حقيقية.", "شارك فريقك ملخصًا قصيرًا لأهم ما تعلمته."],
+    },
+    str_ideas: {
+      summary: "تأتيك الأفكار باستمرار، وترى روابط بين أشياء لا يربط بينها غيرك. تملّ من التكرار، وتبحث دائمًا عن طريقة أذكى وأكثر ابتكارًا لإنجاز العمل.",
+      howItShows: ["تقترح أفكارًا كثيرة في جلسات العصف الذهني.", "تربط بين مجالات مختلفة لتصل إلى حلول جديدة.", "تسأل كثيرًا: لماذا لا نجرب طريقة مختلفة؟"],
+      taskManagement: ["دوّن أفكارك في قائمة واحدة، واختر منها ما يخدم أولويات الشهر فقط.", "استخدم الابتكار لتبسيط المهام المتكررة وتقليل وقتها.", "حوّل الفكرة المختارة إلى تجربة صغيرة قبل تعميمها."],
+      atWork: ["تصميم البرامج والمبادرات الجديدة.", "التسويق وصناعة المحتوى الإبداعي.", "حل المشكلات التي لم تنجح معها الحلول التقليدية."],
+      teamRole: "أنت مصدر الأفكار الجديدة الذي يحمي الفريق من الجمود.",
+      blindSpots: ["قد تكثر الأفكار دون تنفيذ؛ اختر فكرة واحدة وأكملها قبل الانتقال إلى غيرها.", "قد تغيّر الطريقة باستمرار فترهق الفريق؛ حافظ على ما ينجح."],
+      partners: ["exec_structure", "exec_momentum"],
+      actionPlan: ["اكتب عشر أفكار لتحسين عملك واختر واحدة لتجربتها هذا الأسبوع.", "ابحث عن مهمة متكررة وصمّم طريقة أسرع لإنجازها.", "اعرض فكرتك على زميل منظم ليساعدك في تحويلها إلى خطة."],
+    },
+    str_pathways: {
+      summary: "ترى عدة طرق للوصول إلى الهدف، وتختار أنسبها بسرعة. تتوقع العقبات قبل وقوعها وتجهز لها البدائل، فيثق من حولك في الطريق الذي تختاره.",
+      howItShows: ["تفكر في الاحتمالات والبدائل قبل اتخاذ أي قرار.", "تتوقع المشكلات المحتملة في الخطط قبل غيرك.", "تجد مخرجًا حين يصل الآخرون إلى طريق مسدود."],
+      taskManagement: ["أعدّ خطة بديلة لكل مهمة حرجة قبل البدء.", "حدد المخاطر الرئيسية لكل مشروع وطريقة التعامل مع كل منها.", "قارن بين طريقتين على الأقل قبل اعتماد أسلوب التنفيذ."],
+      atWork: ["التخطيط الاستراتيجي وإدارة المخاطر.", "المشاريع المعقدة متعددة المراحل.", "المواقف المتغيرة التي تحتاج حلولًا بديلة بسرعة."],
+      teamRole: "أنت من يرسم الطريق ويجهز الفريق لما قد يعترضه.",
+      blindSpots: ["قد تؤخر كثرة التفكير في الاحتمالات اتخاذ القرار؛ حدد وقتًا للاختيار.", "قد يرى البعض توقعك للعقبات تشاؤمًا؛ اعرضها مع حلولها."],
+      partners: ["inf_initiative", "rel_inclusion"],
+      actionPlan: ["اختر مشروعًا حاليًا واكتب أبرز ثلاثة مخاطر وطريقة التعامل مع كل منها.", "أعدّ خطة بديلة لأهم مهمة في هذا الأسبوع.", "شارك فريقك خريطة مختصرة للطرق الممكنة لتحقيق هدف قائم."],
+    },
+  };
+
+  BQ.DOMAIN_INSIGHTS = {
+    exec: {
+      dominantText: "يتصدر مجال التنفيذ ملفك؛ فأنت تعرف كيف تحوّل الخطط إلى نتائج ملموسة. استثمر ذلك بتولي مراحل التنفيذ والمتابعة، واجعل لكل مهمة موعدًا ومخرجًا واضحًا.",
+      complementText: "عندما يكون التنفيذ أقل مجالاتك، اربط أفكارك بشريك منظم يحوّلها إلى خطوات ومواعيد، واستخدم قوائم المهام لضبط المتابعة.",
+    },
+    inf: {
+      dominantText: "يتصدر مجال التأثير ملفك؛ فأنت قادر على تحريك الناس وكسب تأييدهم. استثمر ذلك في إطلاق المبادرات وتذليل العوائق، واربط كل مهمة بقرار وشخص مسؤول.",
+      complementText: "عندما يكون التأثير أقل مجالاتك، استعن بزميل يجيد العرض والإقناع لتقديم أفكارك، وجهّز حججك مكتوبة قبل الاجتماعات.",
+    },
+    rel: {
+      dominantText: "يتصدر مجال بناء العلاقات ملفك؛ فأنت تصنع الثقة والتماسك داخل الفريق. استثمر ذلك في توزيع المهام بما يناسب الأفراد، وفي إدارة الشراكات والأعمال المشتركة.",
+      complementText: "عندما يكون بناء العلاقات أقل مجالاتك، خصص وقتًا منتظمًا للتواصل مع فريقك، واستعن بزميل قريب من الناس لقراءة أثر القرارات عليهم.",
+    },
+    str: {
+      dominantText: "يتصدر مجال التفكير الاستراتيجي ملفك؛ فأنت ترى الصورة الكبيرة وتحلل الخيارات بعمق. استثمر ذلك في التخطيط وترتيب الأولويات، ثم اربط أفكارك بخطوات تنفيذية قريبة.",
+      complementText: "عندما يكون التفكير الاستراتيجي أقل مجالاتك، خصص وقتًا شهريًا لمراجعة الأهداف البعيدة، واستشر زميلًا تحليليًا قبل القرارات الكبيرة.",
+    },
+  };
+
+  BQ.BALANCED_TEXT = "ملفك متوازن بين المجالات الأربعة؛ وهذا يمنحك مرونة في التنقل بين الأدوار المختلفة داخل الفريق.";
+})(typeof window !== "undefined" ? window : globalThis);
+(function (g) {
+  const BQ = (g.BQ = g.BQ || {});
+
+  function mulberry32(a) {
+    return function () {
+      a |= 0;
+      a = (a + 0x6d2b79f5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  BQ.mulberry32 = mulberry32;
+
+  const strengthsOf = (pid) => { const p = BQ.PAIR_BY_ID[pid]; return [BQ.ST_BY_ID[p.a].strengthId, BQ.ST_BY_ID[p.b].strengthId]; };
+
+  // Seeded session order: consecutive pairs never share a strength. Also decides which statement shows as "أ".
+  BQ.buildOrder = function (seed) {
+    for (let attempt = 0; attempt < 500; attempt++) {
+      const rnd = mulberry32((seed + attempt * 7919) >>> 0);
+      const remaining = BQ.PAIRS.map((p) => p.id);
+      const order = [];
+      let ok = true;
+      while (remaining.length) {
+        const prev = order.length ? strengthsOf(order[order.length - 1]) : [];
+        const cands = remaining.filter((id) => !strengthsOf(id).some((s) => prev.includes(s)));
+        if (!cands.length) { ok = false; break; }
+        const pick = cands[Math.floor(rnd() * cands.length)];
+        order.push(pick);
+        remaining.splice(remaining.indexOf(pick), 1);
+      }
+      if (ok) {
+        const flips = {};
+        order.forEach((id) => (flips[id] = rnd() < 0.5));
+        return { order, flips };
+      }
+    }
+    const order = BQ.PAIRS.map((p) => p.id);
+    return { order, flips: {} };
+  };
+
+  BQ.checkOrder = function (order) {
+    for (let i = 1; i < order.length; i++) {
+      const a = strengthsOf(order[i - 1]);
+      if (strengthsOf(order[i]).some((s) => a.includes(s))) return false;
+    }
+    return new Set(order).size === BQ.PAIRS.length;
+  };
+
+  // Canonical value: 1 = statement a strongly … 5 = statement b strongly; null = time ran out.
+  const PTS_A = [2, 1, 0.5, 0, 0], PTS_B = [0, 0, 0.5, 1, 2];
+  const PER_STRENGTH = 6, MAX_PTS = 2;
+
+  BQ.scoreAnswers = function (answers) {
+    const pts = {}, strong = {}, times = {};
+    BQ.STRENGTHS.forEach((s) => { pts[s.id] = 0; strong[s.id] = 0; times[s.id] = []; });
+    let neutral = 0, timeouts = 0, n = 0;
+    BQ.PAIRS.forEach((p) => {
+      const a = answers[p.id];
+      if (!a) return;
+      n++;
+      const [sa, sb] = [BQ.ST_BY_ID[p.a].strengthId, BQ.ST_BY_ID[p.b].strengthId];
+      if (a.value == null) { timeouts++; return; }
+      const v = a.value;
+      pts[sa] += PTS_A[v - 1]; pts[sb] += PTS_B[v - 1];
+      if (v === 1) strong[sa]++;
+      if (v === 5) strong[sb]++;
+      if (v === 3) neutral++;
+      const ms = Math.min(20000, Math.max(800, a.ms || 20000));
+      if (v <= 2) times[sa].push(ms);
+      if (v >= 4) times[sb].push(ms);
+    });
+    const strengthScores = {}, meanTime = {};
+    BQ.STRENGTHS.forEach((s) => {
+      strengthScores[s.id] = Math.round((pts[s.id] / (PER_STRENGTH * MAX_PTS)) * 100);
+      meanTime[s.id] = times[s.id].length ? times[s.id].reduce((x, y) => x + y, 0) / times[s.id].length : Infinity;
+    });
+    const domainScores = {};
+    BQ.DOMAINS.forEach((d) => {
+      const ss = BQ.STRENGTHS.filter((s) => s.domain === d.id).map((s) => strengthScores[s.id]);
+      domainScores[d.id] = Math.round(ss.reduce((a, b) => a + b, 0) / ss.length);
+    });
+    const indexOf = Object.fromEntries(BQ.STRENGTHS.map((s, i) => [s.id, i]));
+    const ranked = BQ.STRENGTHS.map((s) => s.id).sort((a, b) =>
+      strengthScores[b] - strengthScores[a] ||
+      strong[b] - strong[a] ||
+      (meanTime[a] - meanTime[b] || 0) ||
+      domainScores[BQ.STRENGTH_BY_ID[b].domain] - domainScores[BQ.STRENGTH_BY_ID[a].domain] ||
+      indexOf[a] - indexOf[b]
+    );
+    let dominant = BQ.DOMAINS[0].id, weakest = BQ.DOMAINS[0].id;
+    BQ.DOMAINS.forEach((d) => {
+      if (domainScores[d.id] > domainScores[dominant]) dominant = d.id;
+      if (domainScores[d.id] < domainScores[weakest]) weakest = d.id;
+    });
+    const flags = [];
+    if (n && neutral / n >= 0.4) flags.push("neutral");
+    if (n && timeouts / n >= 0.15) flags.push("timeouts");
+    return { strengthScores, domainScores, ranked, top5: ranked.slice(0, 5), dominantDomain: dominant, weakestDomain: weakest, flags };
+  };
+
+  BQ.uuid = function () {
+    try { if (g.crypto && g.crypto.randomUUID) return g.crypto.randomUUID(); } catch (e) {}
+    return "r-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+  };
+
+  BQ.buildResult = function (answers, name) {
+    const s = BQ.scoreAnswers(answers);
+    return {
+      id: BQ.uuid(),
+      version: 1,
+      format: "pairs",
+      createdAt: new Date().toISOString(),
+      name: name || undefined,
+      answers,
+      strengthScores: s.strengthScores,
+      domainScores: s.domainScores,
+      top5: s.top5,
+      ranked: s.ranked,
+      dominantDomain: s.dominantDomain,
+      weakestDomain: s.weakestDomain,
+      flags: s.flags,
+    };
+  };
+})(typeof window !== "undefined" ? window : globalThis);
+(function () {
+  "use strict";
+  const BQ = window.BQ;
+  const S = BQ.STRENGTH_BY_ID, D = BQ.DOMAIN_BY_ID;
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const KEYS = { session: "bq.v2.session", results: "bq.v1.results", theme: "bq.v1.theme", checks: "bq.v1.actionChecks", ownerPin: "bq.v1.ownerPin", hideHistory: "bq.v1.hideHistory" };
+  const dc = (d) => `--dc:var(--domain-${d})`;
+
+  /* ---------- Storage ---------- */
+  const mem = {};
+  let storageOK = true;
+  try { localStorage.setItem("bq.v1.__t", "1"); localStorage.removeItem("bq.v1.__t"); } catch (e) { storageOK = false; }
+  function sGet(k) {
+    try { const v = storageOK ? localStorage.getItem(k) : mem[k]; return v == null ? null : JSON.parse(v); } catch (e) { return null; }
+  }
+  function sSet(k, v) {
+    const s = JSON.stringify(v); mem[k] = s;
+    if (!storageOK) return;
+    try { localStorage.setItem(k, s); } catch (e) {}
+  }
+  function sDel(k) { delete mem[k]; try { if (storageOK) localStorage.removeItem(k); } catch (e) {} }
+
+  function validResult(r) {
+    return !!r && typeof r.id === "string" && r.version === 1 && typeof r.createdAt === "string" &&
+      Array.isArray(r.top5) && r.top5.length === 5 && r.top5.every((id) => S[id]) &&
+      r.strengthScores && BQ.STRENGTHS.every((s) => typeof r.strengthScores[s.id] === "number") &&
+      r.domainScores && BQ.DOMAINS.every((d) => typeof r.domainScores[d.id] === "number");
+  }
+  function getResults() { const a = sGet(KEYS.results); return Array.isArray(a) ? a.filter(validResult) : []; }
+  function saveResults(list) {
+    list.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    sSet(KEYS.results, list.slice(0, 20));
+  }
+  function loadSession() {
+    const s = sGet(KEYS.session);
+    if (!s || !Array.isArray(s.order) || s.order.length !== 60 || !s.order.every((id) => BQ.PAIR_BY_ID[id]) ||
+      typeof s.currentIndex !== "number" || !s.answers || typeof s.answers !== "object" || !s.flips || typeof s.flips !== "object") return null;
+    s.currentIndex = Math.max(0, Math.min(59, s.currentIndex));
+    s.milestones = Array.isArray(s.milestones) ? s.milestones : [];
+    return s;
+  }
+  const saveSession = () => session && sSet(KEYS.session, session);
+  function getChecks() { const c = sGet(KEYS.checks); return c && typeof c === "object" ? c : {}; }
+
+  /* ---------- Theme ---------- */
+  const rootEl = document.documentElement;
+  let hostTheme = rootEl.getAttribute("data-theme");
+  let themeMode = ["light", "dark", "system"].includes(sGet(KEYS.theme)) ? sGet(KEYS.theme) : "system";
+  let applyingTheme = false;
+  function applyTheme() {
+    applyingTheme = true;
+    if (themeMode === "light" || themeMode === "dark") rootEl.setAttribute("data-theme", themeMode);
+    else if (hostTheme) rootEl.setAttribute("data-theme", hostTheme);
+    else rootEl.removeAttribute("data-theme");
+    applyingTheme = false;
+  }
+  new MutationObserver(() => {
+    if (applyingTheme) return;
+    hostTheme = rootEl.getAttribute("data-theme");
+    if (themeMode !== "system" && hostTheme !== themeMode) applyTheme();
+  }).observe(rootEl, { attributes: true, attributeFilter: ["data-theme"] });
+  applyTheme();
+
+  /* ---------- State ---------- */
+  let session = loadSession();
+  const state = { view: "landing", resultId: null, menuOpen: false, confirmRestart: false, chartTab: "radar", expanded: {}, confirmDelete: null, dir: "fwd", exporting: false, shownAt: 0, prevP: 0 };
+  let downloads = null;
+  // Desktop build (Windows app): save files through the native "Save as" dialog.
+  const IS_DESKTOP = typeof window.NL_PORT !== "undefined" && !!window.Neutralino;
+  if (IS_DESKTOP) {
+    try { window.Neutralino.init(); } catch (e) {}
+    downloads = {
+      save: async ({ filename, data }) => {
+        const ext = filename.split(".").pop();
+        const path = await window.Neutralino.os.showSaveDialog("حفظ الملف", { defaultPath: filename, filters: [{ name: ext.toUpperCase(), extensions: [ext] }] });
+        if (!path) throw { code: "declined" };
+        if (typeof data === "string") await window.Neutralino.filesystem.writeFile(path, data);
+        else await window.Neutralino.filesystem.writeBinaryFile(path, data instanceof Blob ? await data.arrayBuffer() : data);
+        return { status: "saved" };
+      },
+    };
+  }
+  try {
+    if (!IS_DESKTOP && window.claude && typeof window.claude.use === "function") {
+      window.claude.use("downloads").then((d) => { downloads = d; if (state.view === "results" || state.view === "history") render(); }).catch(() => {});
+    }
+  } catch (e) {}
+
+  // Plain browser (official website): offer files as a normal download.
+  if (!IS_DESKTOP && !(window.claude && typeof window.claude.use === "function")) {
+    downloads = {
+      save: async ({ filename, data }) => {
+        const blob = data instanceof Blob ? data : new Blob([data], { type: filename.endsWith(".csv") ? "text/csv;charset=utf-8" : "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url; link.download = filename; document.body.appendChild(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        return { status: "saved" };
+      },
+    };
+  }
+
+  /* ---------- Central database (website + desktop builds set window.VECTOR_CONFIG) ---------- */
+  const REMOTE = window.VECTOR_CONFIG && window.VECTOR_CONFIG.api ? window.VECTOR_CONFIG : null;
+  async function rest(path, body, prefer) {
+    const headers = { apikey: REMOTE.key, Authorization: "Bearer " + REMOTE.key, "Content-Type": "application/json" };
+    if (prefer) headers.Prefer = prefer;
+    const res = await fetch(REMOTE.api + path, { method: "POST", headers, body: JSON.stringify(body) });
+    const text = await res.text();
+    if (!res.ok) { const e = new Error(text); e.status = res.status; e.body = text; throw e; }
+    return text ? JSON.parse(text) : null;
+  }
+  const PENDING_KEY = "bq.v1.pending";
+  async function submitRemote(r) {
+    if (!REMOTE) return;
+    const { answers, ...rest_ } = r;
+    await rest("/rest/v1/submissions", { ref: refOf(r), name: r.name, show_name: r.showName !== false, consent: true, result: { ...rest_, answers } }, "return=minimal");
+  }
+  async function flushPending() {
+    if (!REMOTE) return;
+    const ids = sGet(PENDING_KEY) || [];
+    if (!ids.length) return;
+    const left = [];
+    for (const id of ids) {
+      const r = getResults().find((x) => x.id === id);
+      if (!r) continue;
+      try { await submitRemote(r); } catch (e) { left.push(id); }
+    }
+    if (left.length) sSet(PENDING_KEY, left); else sDel(PENDING_KEY);
+  }
+  function rowToResult(row) {
+    const res = row.result || {};
+    return { ...res, id: res.id || row.id, _rowId: row.id, name: row.name, showName: row.show_name, createdAt: res.createdAt || row.created_at };
+  }
+  const ownerSource = () => (REMOTE ? state.remoteResults || [] : getResults());
+
+  /* ---------- Helpers ---------- */
+  function fmtDate(iso) {
+    try { return new Intl.DateTimeFormat("ar-SA-u-ca-gregory-nu-latn", { day: "numeric", month: "long", year: "numeric" }).format(new Date(iso)); }
+    catch (e) { return String(iso).slice(0, 10); }
+  }
+  let toastTimer = null;
+  function toast(msg) {
+    const host = document.getElementById("toast-host");
+    host.classList.toggle("lift", state.view === "results");
+    host.innerHTML = `<div class="toast" role="status">${esc(msg)}</div>`;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { host.innerHTML = ""; }, 2600);
+  }
+  function go(view, extra) {
+    Object.assign(state, { view, menuOpen: false, confirmRestart: false, confirmDelete: null }, extra || {});
+    render();
+    const pane = document.getElementById("main"); if (pane) pane.scrollTop = 0;
+  }
+  const rankedOf = (r) => (Array.isArray(r.ranked) && r.ranked.length === 20 ? r.ranked : BQ.STRENGTHS.map((s) => s.id).sort((a, b) => r.strengthScores[b] - r.strengthScores[a]));
+
+  /* ---------- Vector mark: a "V" made of two vectors from one origin; the mint arm ends in an arrowhead (direction + growth) ---------- */
+  // Logo: two ribbons forming a "V" — white = where you start, mint = where your strength takes you.
+  const LOGO_INNER = `
+    <polygon points="40,48 72,48 114,156 82,156" fill="#ffffff"/>
+    <polygon points="128,48 160,48 118,156 86,156" fill="#2fd1b0" fill-opacity=".92"/>`;
+  function logoMark(size) {
+    return `<svg width="${size}" height="${size}" viewBox="0 0 200 200" aria-hidden="true" focusable="false"><rect width="200" height="200" rx="52" fill="#2b2a7a"/>${LOGO_INNER}</svg>`;
+  }
+  function printArt(small) {
+    if (small) return logoMark(32);
+    let dots = "";
+    for (let x = 20; x <= 220; x += 20) for (let y = 20; y <= 220; y += 20) dots += `<circle cx="${x}" cy="${y}" r="1.6" style="fill:var(--line)"/>`;
+    return `<svg class="print-art" viewBox="0 0 240 240" aria-hidden="true" focusable="false">${dots}<g transform="translate(30 30) scale(.9)"><rect width="200" height="200" rx="52" fill="#2b2a7a"/>${LOGO_INNER}</g></svg>`;
+  }
+
+  /* ---------- Charts ---------- */
+  const SCREEN_PAL = { ink: "var(--ink)", line: "var(--line)", muted: "var(--muted)", fg: "var(--fg)", bg: "var(--surface)", exec: "var(--domain-exec)", inf: "var(--domain-inf)", rel: "var(--domain-rel)", str: "var(--domain-str)" };
+  const PRINT_LIGHT = { mint: "#14a085", bg: "#f5f5fb", surface: "#ffffff", surface2: "#ededf7", fg: "#17163d", muted: "#5b5a80", line: "#e0e0ee", ink: "#2b2a7a", exec: "#4c5bd4", inf: "#d9741a", rel: "#1e9461", str: "#8a4fdb" };
+  const PRINT_DARK = { mint: "#2fd1b0", bg: "#0e0d24", surface: "#17163a", surface2: "#211f4d", fg: "#ecebfb", muted: "#a6a5c8", line: "#2e2c5e", ink: "#b9b6ff", exec: "#8c97ff", inf: "#ffa94d", rel: "#4ade9a", str: "#c29bff" };
+  function isDarkNow() {
+    const t = document.documentElement.getAttribute("data-theme");
+    if (t === "dark") return true;
+    if (t === "light") return false;
+    try { return window.matchMedia("(prefers-color-scheme: dark)").matches; } catch (e) { return false; }
+  }
+  const printPalette = () => (isDarkNow() ? PRINT_DARK : PRINT_LIGHT);
+  function radarSVG(scores, pal) {
+    const cx = 240, cy = 190, R = 125;
+    const ax = [["exec", 0, -1], ["inf", 1, 0], ["rel", 0, 1], ["str", -1, 0]];
+    const pt = (v, dx, dy) => `${(cx + (dx * R * v) / 100).toFixed(1)},${(cy + (dy * R * v) / 100).toFixed(1)}`;
+    const font = 'font-family="Readex Pro, IBM Plex Sans Arabic, Tajawal, Segoe UI, sans-serif"';
+    let g = "";
+    [25, 50, 75, 100].forEach((t) => {
+      g += `<polygon points="${ax.map(([, dx, dy]) => pt(t, dx, dy)).join(" ")}" style="fill:none;stroke:${pal.line};stroke-width:1"/>`;
+      g += `<text x="${cx + 6}" y="${cy - (R * t) / 100 - 3}" direction="ltr" text-anchor="start" font-size="11" ${font} style="fill:${pal.muted}">${t}</text>`;
+    });
+    ax.forEach(([, dx, dy]) => { g += `<line x1="${cx}" y1="${cy}" x2="${cx + dx * R}" y2="${cy + dy * R}" style="stroke:${pal.line};stroke-width:1"/>`; });
+    const poly = ax.map(([d, dx, dy]) => pt(Math.max(3, scores[d]), dx, dy)).join(" ");
+    g += `<polygon points="${poly}" style="fill:${pal.ink};fill-opacity:.12;stroke:${pal.ink};stroke-width:2;stroke-linejoin:round"/>`;
+    ax.forEach(([d, dx, dy]) => {
+      const [x, y] = pt(Math.max(3, scores[d]), dx, dy).split(",");
+      g += `<circle cx="${x}" cy="${y}" r="6.5" style="fill:${pal[d]};stroke:${pal.bg};stroke-width:2.5"/>`;
+    });
+    const lab = (x, y, lines, d) => {
+      let out = "";
+      lines.forEach((l, i) => { out += `<text x="${x}" y="${y + i * 19}" text-anchor="middle" font-size="15" font-weight="700" ${font} style="fill:${pal.fg}">${l}</text>`; });
+      out += `<text x="${x}" y="${y + lines.length * 19 + 2}" text-anchor="middle" direction="ltr" font-size="15" font-weight="700" ${font} style="fill:${pal[d]}">${scores[d]}</text>`;
+      return out;
+    };
+    g += lab(cx, 26, ["التنفيذ"], "exec");
+    g += lab(cx, 336, ["بناء العلاقات"], "rel");
+    g += lab(418, 178, ["التأثير"], "inf");
+    g += lab(64, 168, ["التفكير", "الاستراتيجي"], "str");
+    return `<svg viewBox="0 0 480 380" role="img" aria-label="رسم راداري لتوزيع درجاتك على المجالات الأربعة">${g}</svg>`;
+  }
+  function domainList(r) {
+    return BQ.DOMAINS.slice().sort((a, b) => r.domainScores[b.id] - r.domainScores[a.id]).map((d) =>
+      `<div class="dom-row" style="${dc(d.id)}"><div class="top"><span>${d.name}</span><span>${r.domainScores[d.id]}</span></div><div class="mini"><i style="width:${r.domainScores[d.id]}%"></i></div></div>`).join("");
+  }
+  function barsChart(r) {
+    const top = new Set(r.top5);
+    const rows = rankedOf(r).map((id) => {
+      const s = S[id], v = r.strengthScores[id];
+      return `<div class="bar-row ${top.has(id) ? "top" : ""}" style="${dc(s.domain)}"><span class="nm">${top.has(id) ? '<i data-lucide="star" aria-label="ضمن أبرز خمس"></i>' : ""}<span>${s.name}</span></span><span class="bt" role="img" aria-label="${s.name}: ${v} من 100"><i style="width:${v}%"></i></span><span class="vl">${v}</span></div>`;
+    }).join("");
+    return `<div class="bars"><div class="bars-scale" aria-hidden="true"><span></span><span class="sc"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></span><span></span></div>${rows}</div>`;
+  }
+  function insightOf(r) {
+    const vals = BQ.DOMAINS.map((d) => r.domainScores[d.id]);
+    if (Math.max(...vals) - Math.min(...vals) <= 10) return { balanced: true, text: BQ.BALANCED_TEXT };
+    return { balanced: false, text: BQ.DOMAIN_INSIGHTS[r.dominantDomain].dominantText };
+  }
+
+  /* ---------- Certificate (results hero + first PDF page) ---------- */
+  const refOf = (r) => "VEC-" + String(r.id).replace(/[^a-z0-9]/gi, "").slice(0, 6).toUpperCase();
+  function certHTML(r, colorOf, tag) {
+    const t = tag || "div";
+    const first = S[r.top5[0]];
+    const showName = r.name && r.showName !== false;
+    const chips = r.top5.slice(1).map((id) =>
+      `<span class="cert-chip" style="--dc:${colorOf(S[id].domain)}"><i></i>${S[id].name}<b>${r.strengthScores[id]}</b></span>`).join("");
+    return `<div class="cert"><div class="cert-in">
+      ${logoMark(46)}
+      <div class="cert-brand">مقياس <span class="latin">Vector</span></div>
+      <${t} class="cert-title">ملف نقاط القوة</${t}>
+      ${showName ? `<p class="cert-for">أُعدّ هذا الملف لـ</p><p class="cert-name">${esc(r.name)}</p>` : ""}
+      <div class="cert-seal"><b>${r.strengthScores[first.id]}</b><span>القوة الأولى</span></div>
+      <p class="cert-top">${first.name}</p>
+      <p class="cert-tag">${first.tagline}</p>
+      <div class="cert-chips">${chips}</div>
+      <div class="cert-meta"><span>${fmtDate(r.createdAt)}</span><span class="mono-ref">${refOf(r)}</span></div>
+    </div></div>`;
+  }
+
+  /* ---------- Views ---------- */
+  function sidebar() {
+    const items = [["landing", "الرئيسية", "house"], ["history", "نتائجي", "history"], ["about", "عن المقياس", "info"]].filter(([v]) => v !== "history" || !sGet(KEYS.hideHistory));
+    const cur = ["landing", "history", "about", "owner"].includes(state.view) ? state.view : null;
+    const nav = items.map(([v, l, ic]) => `<button data-go="${v}" ${cur === v ? 'aria-current="page"' : ""}><i data-lucide="${ic}"></i><span>${l}</span></button>`).join("");
+    const t = [["light", "sun", "الوضع الفاتح"], ["dark", "moon", "الوضع الداكن"], ["system", "monitor", "حسب إعداد الجهاز"]]
+      .map(([m, ic, l]) => `<button data-theme-mode="${m}" aria-pressed="${themeMode === m}" aria-label="${l}" title="${l}"><i data-lucide="${ic}"></i></button>`).join("");
+    return `<aside class="side">
+      <button class="brand" data-go="landing" aria-label="مقياس Vector، الصفحة الرئيسية">${printArt(true)}<span class="brand-text"><span class="wordmark">مقياس <span class="latin">Vector</span></span><small>لاكتشاف نقاط القوة</small></span></button>
+      <nav class="side-nav" aria-label="التنقل الرئيسي">${nav}</nav>
+      <div class="side-foot">
+        <div class="theme" role="group" aria-label="مظهر العرض">${t}</div>
+      </div>
+    </aside>`;
+  }
+
+  function viewLanding() {
+    const answered = session ? Object.keys(session.answers).length : 0;
+    let cta;
+    if (session && answered > 0) {
+      cta = `<div class="card resume"><h2>لديك تقييم لم يكتمل</h2>
+        <div class="bar" aria-hidden="true"><i style="width:${(answered / 60) * 100}%"></i></div>
+        <p class="muted">أجبت عن ${answered} من 60 سؤالًا.</p>
+        <div class="row">${state.confirmRestart
+          ? `<p style="flex-basis:100%">ستُحذف إجاباتك الحالية. هل تريد البدء من جديد؟</p><button class="btn btn-danger btn-sm" data-action="restart-yes">نعم، ابدأ من جديد</button><button class="btn btn-ghost btn-sm" data-action="restart-no">تراجع</button>`
+          : `<button class="btn btn-primary" data-action="resume"><i data-lucide="play"></i>متابعة من حيث توقفت</button><button class="btn btn-ghost" data-action="restart"><i data-lucide="rotate-ccw"></i>البدء من جديد</button>`}</div></div>`;
+    } else {
+      cta = `<button class="btn btn-primary" data-go="intro">ابدأ التقييم<i data-lucide="arrow-left"></i></button>`;
+    }
+    const latest = getResults()[0];
+    const latestLink = latest && !sGet(KEYS.hideHistory) && !(session && answered > 0) ? `<button class="link-btn" data-open="${esc(latest.id)}">عرض آخر نتيجة لك</button>` : "";
+    const doms = BQ.DOMAINS.map((d) => `<div class="dom-mini" style="${dc(d.id)}"><span class="ic"><i data-lucide="${d.icon}"></i></span><div><b>${d.name}</b><span>${d.desc}</span></div></div>`).join("");
+    const chips = [["timer", "60 مقارنة بمهلة محسوبة"], ["shield-check", REMOTE ? "بياناتك محمية" : "خصوصية تامة"], ["file-text", "تقرير PDF مهني"]]
+      .map(([ic, t]) => `<span class="feat-chip"><i data-lucide="${ic}"></i>${t}</span>`).join("");
+    return `<div class="landing">
+      <section class="land-main">
+        <p class="eyebrow">مقياس نقاط القوة</p>
+        <h1 class="brand-title">مقياس <span class="latin">Vector</span></h1>
+        <p class="tagline"><b>اكتشف نقاط قوتك</b> الخمس الأبرز</p>
+        <p class="pitch">مقياس متقدم بمنهجية الاختيار الإجباري، يكشف أبرز خمس قوى تميزك من بين عشرين قوة، ويحوّلها إلى خطة عمل مهنية.</p>
+        <div class="cta">${cta}${latestLink}</div>
+        <div class="feat-chips">${chips}</div>
+      </section>
+      <aside class="land-side card">
+        <div class="method" aria-label="مكونات المقياس">
+          <div class="stat"><b>120</b><span>عبارة</span></div>
+          <div class="stat"><b>60</b><span>مقارنة</span></div>
+          <div class="stat"><b>20</b><span>قوة</span></div>
+          <div class="stat"><b>4</b><span>مجالات</span></div>
+        </div>
+        <div class="dom-minis">${doms}</div>
+        <p class="unique">يوجد <b>1,860,480</b> ترتيبًا ممكنًا لأبرز خمس قوى.</p>
+      </aside>
+    </div>`;
+  }
+
+  function viewIntro() {
+    const bullets = [
+      "ستظهر لك في كل سؤال عبارتان، فاختر الأقرب إليك حتى لو انطبقت عليك العبارتان.",
+      "لكل سؤال 20 ثانية، فاعتمد على انطباعك الأول.",
+      "اختر «محايد» فقط عندما تتساوى العبارتان عندك فعلًا.",
+      "لا توجد إجابات صحيحة أو خاطئة، ولا يمكن الرجوع إلى سؤال سابق.",
+      "يمكنك الحفظ والخروج ثم المتابعة لاحقًا.",
+    ];
+    return `<div class="narrow"><div class="card intro"><h1>قبل أن تبدأ</h1>
+      <ul>${bullets.map((b) => `<li><i data-lucide="check-circle-2"></i><span>${b}</span></li>`).join("")}</ul>
+      <div class="example" aria-label="مثال توضيحي">
+        <span class="eyebrow">مثال توضيحي</span>
+        <div class="ex-row"><span class="st-tag">أ</span><span>أحب أن أضع خطة قبل البدء.</span></div>
+        <div class="ex-row"><span class="st-tag">ب</span><span>أحب أن أبدأ فورًا ثم أعدّل.</span></div>
+        <p class="muted" style="font-size:.9rem">إذا كانت «أ» أقرب إليك قليلًا فاختر «أقرب لـ أ»، وإذا كانت تصفك تمامًا فاختر «أ تمامًا».</p>
+      </div>
+      <div class="field"><label for="name-input">اسمك</label><input id="name-input" type="text" maxlength="40" placeholder="الاسم كما تحب أن يظهر" autocomplete="name" aria-describedby="name-err" required>
+        <span class="field-err" id="name-err" hidden>اكتب اسمك للمتابعة</span>
+        <label class="opt-check" for="show-name"><input type="checkbox" id="show-name" checked><span>أظهر اسمي في التقرير</span></label>
+        ${REMOTE ? `<label class="opt-check" for="consent"><input type="checkbox" id="consent"><span>أوافق على حفظ اسمي ونتيجتي لدى إدارة المقياس لأغراض التحليل وتحسين الخدمة</span></label>
+        <span class="field-err" id="consent-err" hidden>يجب الموافقة على حفظ البيانات للمتابعة</span>` : ""}</div>
+      <div><button class="btn btn-primary" data-action="start">ابدأ الآن<i data-lucide="arrow-left"></i></button></div></div></div>`;
+  }
+
+  function viewQuestion() {
+    const idx = session.currentIndex, pid = session.order[idx], pair = BQ.PAIR_BY_ID[pid];
+    const flip = !!session.flips[pid];
+    const A = BQ.ST_BY_ID[flip ? pair.b : pair.a], B = BQ.ST_BY_ID[flip ? pair.a : pair.b];
+    const answered = Object.keys(session.answers).length;
+    const p = Math.round((answered / 60) * 100);
+    return `<div class="narrow" style="max-width:860px">
+      <div class="progress">
+        <div class="progress-meta" aria-live="polite"><span>السؤال <b>${idx + 1}</b> من 60</span><span id="p-pct"><b>${p}%</b></span></div>
+        <div class="track" role="progressbar" aria-label="نسبة التقدم" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p}" id="p-track">
+          <div class="fill" id="p-fill" style="width:${state.prevP}%"></div>
+          ${[25, 50, 75].map((t) => `<span class="tick ${p >= t ? "on" : ""}" data-t="${t}" style="inset-inline-start:${t}%"></span>`).join("")}
+        </div>
+      </div>
+      <div class="q-wrap enter-fwd">
+        <p class="eyebrow q-ask" id="q-ask">أي العبارتين تصفك أكثر؟</p>
+        <div class="pair">
+          <div class="card st" id="st-a"><span class="st-tag">أ</span><p class="st-text">${esc(A.text)}</p></div>
+          <span class="or" aria-hidden="true">أو</span>
+          <div class="card st" id="st-b"><span class="st-tag">ب</span><p class="st-text">${esc(B.text)}</p></div>
+        </div>
+        <div class="scale5" role="group" aria-labelledby="q-ask">${BQ.PAIR_SCALE.map((o) =>
+          `<button data-answer="${o.v}" aria-pressed="false" aria-label="${o.label}" class="sv sv-${o.v}"><span class="dot" aria-hidden="true"></span><span>${o.short}</span></button>`).join("")}</div>
+        <div class="timer" id="timer" aria-hidden="true"><div class="timer-track"><i id="timer-bar"></i></div><span id="timer-num">${BQ.ITEM_SECONDS}</span></div>
+      </div>
+      <div class="q-controls">
+        <span class="muted" style="font-size:.85rem">اختصارات لوحة المفاتيح: 1 إلى 5</span>
+        <button class="link-btn" data-action="save-exit">حفظ والخروج</button>
+      </div></div>`;
+  }
+
+  function viewAnalyzing() {
+    return `<div class="analyzing"><div><div class="pulse"><i data-lucide="sparkles"></i></div><p style="margin-top:16px;font-size:1.15rem;font-weight:600">جاري تحليل إجاباتك...</p></div></div>`;
+  }
+
+  function reportSection(r, id, i) {
+    const s = S[id], c = BQ.CONTENT[id];
+    const open = (state.expanded[r.id] || { 0: true })[i];
+    const checks = (getChecks()[r.id] || {})[id] || [];
+    const list = (arr) => `<ul>${arr.map((t) => `<li>${t}</li>`).join("")}</ul>`;
+    const blk = (ic, title, body, wide) => `<div class="r-block ${wide ? "wide" : ""}"><h4><i data-lucide="${ic}"></i>${title}</h4>${body}</div>`;
+    const body = open ? `<div class="r-body" id="rb-${i}">
+        <p class="summary">${c.summary}</p>
+        ${blk("eye", "كيف تظهر هذه القوة", list(c.howItShows))}
+        ${blk("list-checks", "استثمارها في إدارة المهام", list(c.taskManagement))}
+        ${blk("briefcase", "أين تتألق في العمل", list(c.atWork))}
+        ${blk("users", "دورك في الفريق", `<p>${c.teamRole}</p>`)}
+        ${blk("alert-triangle", "انتبه إلى", list(c.blindSpots))}
+        ${blk("puzzle", "قوى تكمّلك", `<div class="chips">${c.partners.map((p) => `<span class="badge" style="${dc(S[p].domain)}">${S[p].name}</span>`).join("")}</div>`)}
+        ${blk("calendar-check", "خطة الأيام السبعة القادمة", `<div class="checklist">${c.actionPlan.map((t, k) =>
+          `<label class="check ${checks[k] ? "done" : ""}"><input type="checkbox" id="ck-${r.id.slice(0, 8)}-${id}-${k}" data-check="${id}:${k}" ${checks[k] ? "checked" : ""}><span>${t}</span></label>`).join("")}</div>`, true)}
+      </div>` : "";
+    return `<article class="r-item" style="${dc(s.domain)}">
+      <button class="r-head" data-toggle="${i}" aria-expanded="${!!open}" ${open ? `aria-controls="rb-${i}"` : ""}>
+        <span class="num">${i + 1}</span>
+        <span class="t"><h3>${s.name}</h3><span class="muted" style="font-size:.9rem">${s.tagline}</span></span>
+        <span class="badge">${D[s.domain].name}</span><span class="score">${r.strengthScores[id]}</span>
+        <i data-lucide="chevron-down" class="chev"></i>
+      </button>${body}</article>`;
+  }
+
+  function viewResults() {
+    const r = getResults().find((x) => x.id === state.resultId) || (state.remoteResults || []).find((x) => x.id === state.resultId);
+    if (!r) {
+      return `<div class="card empty"><span class="ic"><i data-lucide="search-x"></i></span><h2>لم نعثر على هذه النتيجة على هذا الجهاز</h2><button class="btn btn-primary" data-go="history">نتائجي المحفوظة</button></div>`;
+    }
+    const ins = insightOf(r);
+    const insDom = ins.balanced ? null : r.dominantDomain;
+    const chart = state.chartTab === "radar"
+      ? `<div class="radar-wrap">${radarSVG(r.domainScores, SCREEN_PAL)}<div class="dom-list">${domainList(r)}</div></div>`
+      : barsChart(r);
+    const flagsTxt = { neutral: "اخترت «محايد» في كثير من الأسئلة؛ ستكون النتائج أدق إذا أعدت التقييم واخترت العبارة الأقرب إليك في كل مرة.", timeouts: "انتهى الوقت قبل أن تجيب عن عدد من الأسئلة؛ ننصح بإعادة التقييم في وقت تكون فيه متفرغًا.", uniform: "لاحظنا أن معظم إجاباتك متشابهة؛ قد تكون النتائج أدق إذا أعدت التقييم مع التمييز بين العبارات.", fast: "أجبت بسرعة كبيرة؛ ننصح بإعادة التقييم بتأنٍّ للحصول على نتائج أدق." };
+    const notices = (r.flags || []).filter((f) => flagsTxt[f]).map((f) => `<div class="notice" role="note"><i data-lucide="alert-triangle"></i><span>${flagsTxt[f]}</span></div>`).join("");
+    const weak = r.weakestDomain;
+    const weakStrengths = BQ.STRENGTHS.filter((s) => s.domain === weak);
+    const pdfLabel = state.exporting ? "جاري إعداد التقرير..." : "تصدير التقرير PDF";
+    const back = state.fromOwner && state.ownerUnlocked ? `<div class="owner-back"><button class="btn btn-ghost btn-sm" data-go="owner"><i data-lucide="arrow-right"></i>العودة إلى لوحة المالك</button></div>` : "";
+    const tab = state.resTab || "dist";
+    const tabs = [["dist", "التوزيع"], ["report", "التقرير التفصيلي"], ["more", "قوة مكمّلة"]]
+      .map(([k, l]) => `<button role="tab" data-res-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join("");
+    let panel;
+    if (tab === "report") panel = `<div class="report">${r.top5.map((id, i) => reportSection(r, id, i)).join("")}</div>`;
+    else if (tab === "more") panel = `<div class="complement" style="${dc(weak)}">
+        <h2>قوة مكمّلة لك</h2>
+        <p><span class="badge">${D[weak].name}</span> هو أقل مجالاتك حضورًا (${r.domainScores[weak]} من 100).</p>
+        <p>${BQ.DOMAIN_INSIGHTS[weak].complementText}</p>
+        <p class="muted">ابحث في فريقك عمّن يتميز بإحدى هذه القوى:</p>
+        <div class="chips">${weakStrengths.map((s) => `<span class="badge">${s.name}</span>`).join("")}</div></div>`;
+    else panel = `${notices ? `<div class="notices">${notices}</div>` : ""}
+        <div class="chart-head"><h2>توزيع قوتك على المجالات الأربعة</h2>
+          <div class="tabs" role="tablist" aria-label="نوع الرسم"><button role="tab" data-tab="radar" aria-selected="${state.chartTab === "radar"}">رادار</button><button role="tab" data-tab="bars" aria-selected="${state.chartTab === "bars"}">أعمدة</button></div></div>
+        ${chart}
+        <div class="insight" ${insDom ? `style="${dc(insDom)}"` : ""}><i data-lucide="${ins.balanced ? "scale" : D[insDom].icon}"></i><p>${ins.balanced ? "" : `<b>المجال الأبرز: ${D[insDom].name}.</b> `}${ins.text}</p></div>`;
+    return `<div class="res-layout">
+      <div class="res-cert">${back}${certHTML(r, (d) => `var(--domain-${d})`, "h1")}</div>
+      <section class="res-panel card">
+        <div class="res-tabs" role="tablist" aria-label="أقسام النتيجة">${tabs}</div>
+        <div class="res-body" id="res-body">${panel}</div>
+        <div class="actions">
+          <button class="btn btn-primary" data-action="pdf" ${state.exporting || !downloads ? "disabled" : ""} ${!downloads ? 'title="التصدير غير متاح في هذا العرض"' : ""}><i data-lucide="file-down"></i>${pdfLabel}</button>
+          <button class="btn btn-ghost" data-action="copy"><i data-lucide="copy"></i>نسخ الملخص</button>
+          <button class="btn btn-ghost" data-action="retake"><i data-lucide="rotate-ccw"></i>إعادة التقييم</button>
+        </div>
+      </section>
+    </div>`;
+  }
+
+  function viewHistory() {
+    const list = getResults();
+    const tools = `<div class="toolbar">
+        <button class="btn btn-ghost btn-sm" data-action="backup" ${!list.length || !downloads ? "disabled" : ""}><i data-lucide="download"></i>تصدير نسخة احتياطية</button>
+        <button class="btn btn-ghost btn-sm" data-action="import"><i data-lucide="upload"></i>استيراد نسخة</button>
+        <input type="file" id="import-file" accept="application/json,.json" hidden>
+      </div>`;
+    if (!list.length) {
+      return `<h1 class="section-title" style="font-size:1.6rem">نتائجي المحفوظة</h1>${tools}
+        <div class="card empty"><span class="ic"><i data-lucide="history"></i></span><h2 style="font-size:1.15rem">لا توجد نتائج محفوظة بعد</h2><button class="btn btn-primary" data-go="intro">ابدأ التقييم</button></div>`;
+    }
+    const items = list.map((r) => {
+      const confirm = state.confirmDelete === r.id;
+      const ops = confirm
+        ? `<span>حذف هذه النتيجة نهائيًا؟</span><button class="btn btn-danger btn-sm" data-del-yes="${esc(r.id)}">تأكيد الحذف</button><button class="btn btn-ghost btn-sm" data-action="del-no">إلغاء</button>`
+        : `<button class="btn btn-primary btn-sm" data-open="${esc(r.id)}">فتح</button><button class="btn btn-ghost btn-sm" data-del="${esc(r.id)}" aria-label="حذف النتيجة"><i data-lucide="trash-2"></i></button>`;
+      return `<div class="card h-item"><div class="info"><span class="eyebrow">${fmtDate(r.createdAt)}${r.name ? ` · ${esc(r.name)}` : ""}</span>
+        <div class="names">${r.top5.slice(0, 3).map((id) => `<span class="badge" style="${dc(S[id].domain)}">${S[id].name}</span>`).join("")}</div></div>
+        <div class="ops">${ops}</div></div>`;
+    }).join("");
+    return `<h1 class="section-title" style="font-size:1.6rem">نتائجي المحفوظة</h1>${tools}<div class="h-list">${items}</div>`;
+  }
+
+  function viewAbout() {
+    return `<div class="prose">
+      <h1 style="font-size:1.8rem">عن التقييم</h1>
+      <p>«Vector» مقياس ذاتي لنقاط القوة، يساعدك على التعرف على أنماطك الطبيعية في العمل، ثم يحوّلها إلى توصيات عملية في إدارة المهام والعمل مع الفريق.</p>
+      <p>واسمه من «المتجه»، وهو في الرياضيات والفيزياء كمية لها اتجاه ومقدار. فلكل شخص اتجاه طبيعي تميل إليه طاقته، وشدة تختلف من مجال إلى آخر، والمقياس يكشف الاثنين معًا.</p>
+      <h2>المجالات الأربعة</h2>
+      <ul>${BQ.DOMAINS.map((d) => `<li><b>${d.name}:</b> ${d.desc}</li>`).join("")}</ul>
+      <h2>منهجية التقييم</h2>
+      <ul>
+        <li>يتكون التقييم من 60 سؤالًا. في كل سؤال عبارتان تمثلان قوتين مختلفتين، وتختار الأقرب إليك على مقياس من خمس درجات.</li>
+        <li>يضم التقييم 120 عبارة، وتظهر كل قوة في 6 مقارنات مع 6 قوى مختلفة، أغلبها من مجالات أخرى.</li>
+        <li>يُسمى هذا الأسلوب «الاختيار الإجباري». وهو يقلل ميل الإنسان إلى الموافقة على كل العبارات الإيجابية، فيكشف أولوياتك الحقيقية بدل الصورة التي تتمناها.</li>
+        <li>لكل سؤال مهلة 20 ثانية، لأن الانطباع الأول أصدق في التعبير عن نمطك الطبيعي من الإجابة المتأنية.</li>
+        <li>تحصل العبارة التي تختارها «تمامًا» على نقطتين، و«الأقرب» على نقطة، و«المحايد» على نصف نقطة لكل عبارة. ثم تتحول نقاط كل قوة إلى درجة من 0 إلى 100، ودرجة كل مجال هي متوسط نقاط قوته الخمس.</li>
+        <li>عند تساوي درجتين تتقدم القوة التي اخترتها «تمامًا» مرات أكثر، ثم القوة التي اخترتها بسرعة أكبر.</li>
+        <li>ينبّهك التقرير إذا أكثرت من اختيار «محايد» أو انتهى الوقت في عدد من الأسئلة، لأن ذلك يضعف دقة النتيجة.</li>
+      </ul>
+      <h2>خصوصيتك</h2>
+      <p>${REMOTE ? "بموافقتك عند بدء التقييم، تُحفظ نتيجتك مع اسمك في قاعدة بيانات آمنة لا يطّلع عليها إلا مالك المقياس، ولا تُستخدم إلا لأغراض التحليل وتحسين الخدمة. وتبقى نسخة من نتائجك في جهازك تستطيع حذفها أو تصديرها من صفحة «نتائجي»." : "تُحفظ إجاباتك ونتائجك في متصفحك على هذا الجهاز فقط، ولا تُرسل إلى أي خادم. يمكنك حذفها أو تصدير نسخة احتياطية منها من صفحة «نتائجي»."}</p>
+      <div><button class="btn btn-primary" data-go="intro">ابدأ التقييم</button></div>
+    </div>`;
+  }
+
+
+  /* ---------- Owner dashboard (PIN-protected, lists every participation saved on this device) ---------- */
+  async function hashPin(pin) {
+    const text = "vector-owner:" + pin;
+    try {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+      return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+    } catch (e) {
+      let h = 5381; for (let i = 0; i < text.length; i++) h = ((h << 5) + h + text.charCodeAt(i)) >>> 0;
+      return "d" + h.toString(16);
+    }
+  }
+  function ownerFiltered() {
+    const q = (state.ownerQuery || "").trim();
+    let list = ownerSource().slice();
+    if (q) list = list.filter((r) => (r.name || "").includes(q) || refOf(r).toLowerCase().includes(q.toLowerCase()));
+    const sort = state.ownerSort || "new";
+    if (sort === "old") list.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+    else if (sort === "name") list.sort((a, b) => (a.name || "").localeCompare(b.name || "", "ar"));
+    else list.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    return list;
+  }
+  function ownerRows() {
+    const list = ownerFiltered();
+    if (!list.length) return `<tr><td colspan="7" class="o-empty">${ownerSource().length ? "لا توجد نتائج مطابقة للبحث" : REMOTE ? "لا توجد مشاركات بعد" : "لم يُكمل أحد التقييم على هذا الجهاز بعد"}</td></tr>`;
+    return list.map((r, i) => {
+      const first = S[r.top5[0]];
+      const confirm = state.confirmDelete === r.id;
+      const ops = confirm
+        ? `<button class="btn btn-danger btn-sm" data-del-yes="${esc(r.id)}">تأكيد الحذف</button><button class="btn btn-ghost btn-sm" data-action="del-no">إلغاء</button>`
+        : `<button class="btn btn-primary btn-sm" data-owner-open="${esc(r.id)}">التقرير</button><button class="btn btn-ghost btn-sm" data-del="${esc(r.id)}" aria-label="حذف مشاركة ${esc(r.name || "")}"><i data-lucide="trash-2"></i></button>`;
+      return `<tr>
+        <td class="o-num">${i + 1}</td>
+        <td><b>${esc(r.name || "بدون اسم")}</b>${r.showName === false ? `<span class="o-hidden">مخفي في التقرير</span>` : ""}</td>
+        <td class="o-date">${fmtDate(r.createdAt)}</td>
+        <td><span class="badge" style="${dc(first.domain)}">${first.name}</span></td>
+        <td class="o-top">${r.top5.slice(1).map((id) => `<span class="o-chip" style="${dc(S[id].domain)}">${S[id].name}</span>`).join("")}</td>
+        <td class="o-ref">${refOf(r)}</td>
+        <td><div class="o-ops">${ops}</div></td></tr>`;
+    }).join("");
+  }
+  function viewOwner() {
+    const hasPin = REMOTE ? true : !!sGet(KEYS.ownerPin);
+    if (!state.ownerUnlocked && REMOTE) {
+      return `<div class="narrow" style="max-width:460px"><form class="card intro" id="owner-form" autocomplete="off">
+        <span class="o-lock"><i data-lucide="lock"></i></span>
+        <h1 style="font-size:1.5rem">دخول المالك</h1><p class="muted">أدخل كلمة مرور المالك لعرض كل المشاركات من جميع الأجهزة.</p>
+        <div class="field"><label for="pin-1">كلمة المرور</label><input id="pin-1" type="password" autocomplete="current-password" maxlength="64"></div>
+        <span class="field-err" id="pin-err" hidden></span>
+        <div><button class="btn btn-primary" type="submit" id="owner-submit">دخول</button></div>
+      </form></div>`;
+    }
+    if (!state.ownerUnlocked) {
+      const title = hasPin ? "دخول المالك" : "إنشاء رقم سري للمالك";
+      const sub = hasPin ? "أدخل الرقم السري لعرض كل المشاركات المحفوظة على هذا الجهاز." : "هذه أول مرة تفتح فيها لوحة المالك. اختر رقمًا سريًا من 4 إلى 8 أرقام، واحفظه جيدًا لأنه لا يمكن استرجاعه.";
+      return `<div class="narrow" style="max-width:460px"><form class="card intro" id="owner-form" autocomplete="off">
+        <span class="o-lock"><i data-lucide="${hasPin ? "lock" : "key-round"}"></i></span>
+        <h1 style="font-size:1.5rem">${title}</h1><p class="muted">${sub}</p>
+        <div class="field"><label for="pin-1">الرقم السري</label><input id="pin-1" type="password" inputmode="numeric" maxlength="8" autocomplete="off"></div>
+        ${hasPin ? "" : `<div class="field"><label for="pin-2">تأكيد الرقم السري</label><input id="pin-2" type="password" inputmode="numeric" maxlength="8" autocomplete="off"></div>`}
+        <span class="field-err" id="pin-err" hidden></span>
+        <div><button class="btn btn-primary" type="submit">${hasPin ? "دخول" : "حفظ والدخول"}</button></div>
+      </form></div>`;
+    }
+    const all = ownerSource();
+    const domCount = {}, strCount = {};
+    all.forEach((r) => { domCount[r.dominantDomain] = (domCount[r.dominantDomain] || 0) + 1; r.top5.forEach((id) => (strCount[id] = (strCount[id] || 0) + 1)); });
+    const topDom = Object.keys(domCount).sort((a, b) => domCount[b] - domCount[a])[0];
+    const topStr = Object.keys(strCount).sort((a, b) => strCount[b] - strCount[a])[0];
+    const hide = !!sGet(KEYS.hideHistory);
+    return `<div class="o-head"><div><p class="eyebrow">لوحة المالك</p><h1 style="font-size:1.8rem">كل المشاركات</h1>${REMOTE ? `<p class="muted" style="font-size:.9rem">من جميع الأجهزة · قاعدة البيانات المركزية</p>` : ""}</div>
+        <div class="o-tools"><button class="btn btn-ghost btn-sm" data-action="owner-csv" ${!all.length || !downloads ? "disabled" : ""}><i data-lucide="sheet"></i>تصدير Excel</button>${REMOTE ? `<button class="btn btn-ghost btn-sm" data-action="owner-refresh"><i data-lucide="refresh-cw"></i>تحديث</button>` : ""}<button class="btn btn-ghost btn-sm" data-action="owner-lock"><i data-lucide="lock"></i>قفل</button></div></div>
+      <div class="o-stats">
+        <div class="o-stat"><span>عدد المشاركات</span><b class="mono-ref">${all.length}</b></div>
+        <div class="o-stat"><span>آخر مشاركة</span><b>${all[0] ? fmtDate(all[0].createdAt) : "—"}</b></div>
+        <div class="o-stat"><span>المجال الأكثر تصدرًا</span><b ${topDom ? `style="color:var(--domain-${topDom})"` : ""}>${topDom ? D[topDom].name : "—"}</b></div>
+        <div class="o-stat"><span>القوة الأكثر ظهورًا</span><b>${topStr ? S[topStr].name : "—"}</b></div>
+      </div>
+      <div class="o-bar">
+        <div class="field o-search"><label for="owner-q" class="sr-only">بحث</label><input id="owner-q" type="search" placeholder="ابحث بالاسم أو الرقم المرجعي" value="${esc(state.ownerQuery || "")}"></div>
+        <div class="field"><label for="owner-sort" class="sr-only">الترتيب</label><select id="owner-sort">
+          <option value="new" ${state.ownerSort !== "old" && state.ownerSort !== "name" ? "selected" : ""}>الأحدث أولًا</option>
+          <option value="old" ${state.ownerSort === "old" ? "selected" : ""}>الأقدم أولًا</option>
+          <option value="name" ${state.ownerSort === "name" ? "selected" : ""}>حسب الاسم</option></select></div>
+      </div>
+      <div class="o-table-wrap card"><table class="o-table">
+        <thead><tr><th>#</th><th>الاسم</th><th>التاريخ</th><th>القوة الأولى</th><th>القوى من 2 إلى 5</th><th>الرقم المرجعي</th><th></th></tr></thead>
+        <tbody id="owner-rows">${ownerRows()}</tbody></table></div>
+      <label class="opt-check o-setting" for="hide-history"><input type="checkbox" id="hide-history" ${hide ? "checked" : ""}><span>إخفاء صفحة «نتائجي» عن المشاركين، حتى لا يرى أحد نتائج غيره على هذا الجهاز</span></label>`;
+  }
+  function refreshOwnerRows() {
+    const tb = document.getElementById("owner-rows");
+    if (!tb) return;
+    tb.innerHTML = ownerRows();
+    if (window.lucide && window.lucide.createIcons) { try { window.lucide.createIcons({ attrs: { class: "ico", "aria-hidden": "true" } }); } catch (e) {} }
+  }
+  async function loadRemote() {
+    const rows = await rest("/rest/v1/rpc/owner_list", { p_secret: state.ownerSecret });
+    state.remoteResults = (rows || []).map(rowToResult).filter(validResult);
+  }
+  async function submitOwnerForm() {
+    if (REMOTE) {
+      const pw = (document.getElementById("pin-1") || {}).value || "";
+      const err = document.getElementById("pin-err");
+      const btn = document.getElementById("owner-submit");
+      const fail = (m) => { if (err) { err.textContent = m; err.hidden = false; } if (btn) btn.disabled = false; };
+      if (pw.length < 8) return fail("كلمة المرور 8 أحرف على الأقل");
+      if (btn) btn.disabled = true;
+      state.ownerSecret = pw;
+      try { await loadRemote(); state.ownerUnlocked = true; render(); }
+      catch (e) { state.ownerSecret = null; fail(e && (e.status === 400 || e.status === 401 || /unauthorized/.test(e.body || "")) ? "كلمة المرور غير صحيحة" : "تعذّر الاتصال بقاعدة البيانات، تحقق من الإنترنت"); }
+      return;
+    }
+    const p1 = (document.getElementById("pin-1") || {}).value || "";
+    const p2el = document.getElementById("pin-2");
+    const err = document.getElementById("pin-err");
+    const fail = (m) => { if (err) { err.textContent = m; err.hidden = false; } };
+    if (!/^\d{4,8}$/.test(p1)) return fail("الرقم السري من 4 إلى 8 أرقام");
+    const stored = sGet(KEYS.ownerPin);
+    if (!stored) {
+      if (!p2el || p2el.value !== p1) return fail("الرقمان غير متطابقين");
+      sSet(KEYS.ownerPin, await hashPin(p1));
+      state.ownerUnlocked = true; render(); toast("تم حفظ الرقم السري");
+      return;
+    }
+    if ((await hashPin(p1)) !== stored) return fail("الرقم السري غير صحيح");
+    state.ownerUnlocked = true; render();
+  }
+  function csvCell(v) { const s = String(v == null ? "" : v); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; }
+  async function exportOwnerCSV() {
+    if (!downloads) { toast("التصدير غير متاح في هذا العرض"); return; }
+    const head = ["الاسم", "التاريخ", "الرقم المرجعي", "إظهار الاسم في التقرير",
+      "القوة 1", "درجة 1", "القوة 2", "درجة 2", "القوة 3", "درجة 3", "القوة 4", "درجة 4", "القوة 5", "درجة 5",
+      "المجال الأبرز", ...BQ.DOMAINS.map((d) => d.name), ...BQ.STRENGTHS.map((s) => s.name)];
+    const rows = ownerFiltered().map((r) => [
+      r.name || "", r.createdAt.slice(0, 10), refOf(r), r.showName === false ? "لا" : "نعم",
+      ...r.top5.flatMap((id) => [S[id].name, r.strengthScores[id]]),
+      D[r.dominantDomain].name, ...BQ.DOMAINS.map((d) => r.domainScores[d.id]), ...BQ.STRENGTHS.map((s) => r.strengthScores[s.id])]);
+    const csv = "﻿" + [head, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n");
+    try { await downloads.save({ filename: `مشاركات-Vector-${new Date().toISOString().slice(0, 10)}.csv`, data: csv }); toast("تم حفظ ملف المشاركات"); }
+    catch (e) { toast(e && e.code === "declined" ? "لم يُحفظ الملف" : "تعذّر حفظ الملف"); }
+  }
+
+  /* ---------- Render ---------- */
+  const app = document.getElementById("app");
+  function render() {
+    let body;
+    switch (state.view) {
+      case "intro": body = viewIntro(); break;
+      case "question": body = session ? viewQuestion() : viewLanding(); break;
+      case "analyzing": body = viewAnalyzing(); break;
+      case "results": body = viewResults(); break;
+      case "history": body = sGet(KEYS.hideHistory) && !state.ownerUnlocked ? viewLanding() : viewHistory(); break;
+      case "about": body = viewAbout(); break;
+      case "owner": body = viewOwner(); break;
+      default: body = viewLanding();
+    }
+    const note = storageOK ? "" : `<p class="storage-note">لن يتم حفظ نتائجك لأن التخزين في المتصفح غير متاح.</p>`;
+    app.innerHTML = `<div class="shell">${sidebar()}<main id="main" class="pane view-${state.view}"><div class="pane-in">${note}${body}</div></main></div>`;
+    if (window.lucide && window.lucide.createIcons) {
+      try { window.lucide.createIcons({ attrs: { class: "ico", "aria-hidden": "true" } }); } catch (e) {}
+    }
+    stopTimer();
+    if (state.view === "question" && session) {
+      startTimer();
+      const p = Math.round((Object.keys(session.answers).length / 60) * 100);
+      requestAnimationFrame(() => requestAnimationFrame(() => { const f = document.getElementById("p-fill"); if (f) f.style.width = p + "%"; state.prevP = p; }));
+    }
+  }
+
+  function updateProgress() {
+    const answered = Object.keys(session.answers).length;
+    const p = Math.round((answered / 60) * 100);
+    const f = document.getElementById("p-fill"); if (f) f.style.width = p + "%";
+    state.prevP = p;
+    const pct = document.getElementById("p-pct"); if (pct) pct.innerHTML = `<b>${p}%</b>`;
+    const tr = document.getElementById("p-track"); if (tr) tr.setAttribute("aria-valuenow", p);
+    document.querySelectorAll(".track .tick").forEach((t) => t.classList.toggle("on", p >= +t.dataset.t));
+  }
+
+  /* ---------- Assessment flow ---------- */
+  const ITEM_MS = BQ.ITEM_SECONDS * 1000;
+  let timerRAF = null;
+  function stopTimer() { if (timerRAF) cancelAnimationFrame(timerRAF); timerRAF = null; }
+  function startTimer() {
+    stopTimer();
+    const start = performance.now();
+    state.shownAt = start;
+    const tick = () => {
+      const left = Math.max(0, ITEM_MS - (performance.now() - start));
+      const bar = document.getElementById("timer-bar"), num = document.getElementById("timer-num"), box = document.getElementById("timer");
+      if (!bar) { timerRAF = null; return; }
+      bar.style.width = (left / ITEM_MS) * 100 + "%";
+      num.textContent = Math.ceil(left / 1000);
+      box.classList.toggle("low", left <= 5000);
+      if (left <= 0) { timerRAF = null; timeUp(); return; }
+      timerRAF = requestAnimationFrame(tick);
+    };
+    timerRAF = requestAnimationFrame(tick);
+  }
+  // Coming back to a hidden tab restarts the current question's 20 seconds instead of timing it out.
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && state.view === "question" && session && !locked) startTimer();
+    else if (document.visibilityState === "hidden") stopTimer();
+  });
+
+  function startSession() {
+    const input = document.getElementById("name-input");
+    const name = input ? input.value.trim().slice(0, 40) : "";
+    const err = document.getElementById("name-err");
+    if (name.length < 2) { if (err) err.hidden = false; if (input) { input.setAttribute("aria-invalid", "true"); input.focus(); } return; }
+    const showBox = document.getElementById("show-name");
+    const showName = showBox ? showBox.checked : true;
+    const consentBox = document.getElementById("consent");
+    if (REMOTE && consentBox && !consentBox.checked) { const ce = document.getElementById("consent-err"); if (ce) ce.hidden = false; consentBox.focus(); return; }
+    const seed = (Math.random() * 4294967295) >>> 0;
+    const { order, flips } = BQ.buildOrder(seed);
+    session = { seed, order, flips, currentIndex: 0, answers: {}, name, showName, startedAt: new Date().toISOString(), milestones: [] };
+    saveSession();
+    state.prevP = 0;
+    go("question", { dir: "fwd" });
+  }
+  let locked = false;
+  const MILESTONES = [[25, "بداية رائعة، استمر!"], [50, "وصلت إلى المنتصف 👏"], [75, "اقتربت كثيرًا من النهاية"]];
+  function record(entry) {
+    const pid = session.order[session.currentIndex];
+    session.answers[pid] = entry;
+    const pct = (Object.keys(session.answers).length / 60) * 100;
+    MILESTONES.forEach(([t, msg]) => { if (pct >= t && !session.milestones.includes(t)) { session.milestones.push(t); toast(msg); } });
+    saveSession();
+    updateProgress();
+  }
+  function answer(v) {
+    if (locked || !session) return;
+    locked = true; stopTimer();
+    const pid = session.order[session.currentIndex];
+    const canonical = session.flips[pid] ? 6 - v : v;
+    record({ value: canonical, ms: Math.round(performance.now() - state.shownAt) });
+    document.querySelectorAll("[data-answer]").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.answer === v)));
+    const a = document.getElementById("st-a"), b = document.getElementById("st-b");
+    if (a && b) { a.classList.toggle("chosen", v <= 2); b.classList.toggle("chosen", v >= 4); }
+    setTimeout(() => { locked = false; advance(); }, 320);
+  }
+  function timeUp() {
+    if (locked || !session) return;
+    locked = true;
+    record({ value: null, ms: ITEM_MS });
+    toast("انتهى وقت هذا السؤال");
+    setTimeout(() => { locked = false; advance(); }, 450);
+  }
+  function advance() {
+    if (!session) return;
+    if (session.currentIndex < 59) {
+      session.currentIndex++;
+      saveSession();
+      state.dir = "fwd";
+      render();
+    } else finish();
+  }
+  function finish() {
+    stopTimer();
+    go("analyzing");
+    setTimeout(() => {
+      const r = BQ.buildResult(session.answers, session.name); r.showName = session.showName !== false;
+      if (REMOTE) { const p = sGet(PENDING_KEY) || []; p.push(r.id); sSet(PENDING_KEY, p); setTimeout(flushPending, 300); }
+      const list = getResults(); list.unshift(r); saveResults(list);
+      sDel(KEYS.session); session = null;
+      go("results", { resultId: r.id, chartTab: "radar", resTab: "dist" });
+    }, 1500);
+  }
+
+  /* ---------- Copy / export ---------- */
+  function summaryText(r) {
+    const lines = ["نقاط قوتي الخمس الأبرز (مقياس Vector)", fmtDate(r.createdAt), ""];
+    r.top5.forEach((id, i) => lines.push(`${i + 1}. ${S[id].name} - ${D[S[id].domain].name} - ${r.strengthScores[id]}/100`));
+    lines.push("", "توزيع المجالات:");
+    BQ.DOMAINS.forEach((d) => lines.push(`- ${d.name}: ${r.domainScores[d.id]}/100`));
+    return lines.join("\n");
+  }
+  function copyText(text) {
+    const fallback = () => {
+      const ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.top = "-1000px";
+      document.body.appendChild(ta); ta.select();
+      let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      ta.remove();
+      toast(ok ? "تم نسخ ملخص النتائج" : "تعذّر النسخ التلقائي في هذا العرض");
+    };
+    try {
+      navigator.clipboard.writeText(text).then(() => toast("تم نسخ ملخص النتائج"), fallback);
+    } catch (e) { fallback(); }
+  }
+
+  function printHTML(r, P) {
+    const ins = insightOf(r);
+    const head = `<div class="pb"><div class="p-head"><div><div class="p-title">تقرير نقاط القوة</div><div>${r.name && r.showName !== false ? esc(r.name) + " · " : ""}${fmtDate(r.createdAt)}</div></div><div style="font-weight:700;font-size:20px;font-weight:700;display:flex;align-items:center;gap:8px">${logoMark(30)}مقياس Vector</div></div></div>`;
+    const top = `<div class="pb"><div class="p-h">نقاط قوتك الخمس الأبرز</div><div class="p-grid">${r.top5.map((id, i) => {
+      const s = S[id]; return `<div class="p-card" style="--dc:${P[s.domain]}"><div class="p-muted" style="font-size:11px">المرتبة ${i + 1}</div><b>${s.name}</b><div style="font-size:11px;color:${P[s.domain]}">${D[s.domain].name}</div><div class="s">${r.strengthScores[id]}</div></div>`;
+    }).join("")}</div></div>`;
+    const radar = `<div class="pb"><div class="p-h">توزيع قوتك على المجالات الأربعة</div><div class="p-panel p-radar">${radarSVG(r.domainScores, { ...P, bg: P.surface })}<div>${BQ.DOMAINS.slice().sort((a, b) => r.domainScores[b.id] - r.domainScores[a.id]).map((d) =>
+      `<div class="p-row" style="--dc:${P[d.id]};grid-template-columns:120px 1fr 30px;margin-bottom:8px"><b>${d.name}</b><span class="bt"><i style="width:${r.domainScores[d.id]}%"></i></span><b>${r.domainScores[d.id]}</b></div>`).join("")}
+      <p style="margin-top:10px">${ins.balanced ? "" : `<b>المجال الأبرز: ${D[r.dominantDomain].name}.</b> `}${ins.text}</p></div></div></div>`;
+    const table = `<div class="pb"><div class="p-h">درجاتك في نقاط القوة العشرين</div><div class="p-panel p-two">${rankedOf(r).map((id) =>
+      `<div class="p-row" style="--dc:${P[S[id].domain]}"><span>${S[id].name}</span><span class="bt"><i style="width:${r.strengthScores[id]}%"></i></span><b>${r.strengthScores[id]}</b></div>`).join("")}</div></div>`;
+    const secs = r.top5.map((id, i) => {
+      const s = S[id], c = BQ.CONTENT[id];
+      const ul = (a) => `<ul>${a.map((t) => `<li>${t}</li>`).join("")}</ul>`;
+      return `<div class="pb"><div class="p-sec" style="--dc:${P[s.domain]}">
+        <h3><span><span class="dot"></span>${i + 1}. ${s.name}</span><span style="color:${P[s.domain]}">${D[s.domain].name} · ${r.strengthScores[id]}</span></h3>
+        <p style="margin-top:6px">${c.summary}</p>
+        <div class="p-two" style="gap:4px 18px">
+          <div><h4>كيف تظهر هذه القوة</h4>${ul(c.howItShows)}</div>
+          <div><h4>استثمارها في إدارة المهام</h4>${ul(c.taskManagement)}</div>
+          <div><h4>أين تتألق في العمل</h4>${ul(c.atWork)}</div>
+          <div><h4>انتبه إلى</h4>${ul(c.blindSpots)}</div>
+        </div>
+        <h4>دورك في الفريق</h4><p>${c.teamRole}</p>
+        <h4>قوى تكمّلك</h4><p>${c.partners.map((p) => S[p].name).join("، ")}</p>
+        <h4>خطة الأيام السبعة القادمة</h4>${ul(c.actionPlan)}
+      </div></div>`;
+    }).join("");
+    const weak = r.weakestDomain;
+    const comp = `<div class="pb"><div class="p-sec" style="--dc:${P[weak]}"><h3><span><span class="dot"></span>قوة مكمّلة لك</span><span style="color:${P[weak]}">${D[weak].name} · ${r.domainScores[weak]}</span></h3><p style="margin-top:6px">${BQ.DOMAIN_INSIGHTS[weak].complementText}</p></div></div>`;
+    const foot = `<div class="p-foot">مقياس Vector · ${refOf(r)} · ${fmtDate(r.createdAt)}</div>`;
+    const certPage = `<div class="pb cert-page">${certHTML(r, (d) => P[d])}</div>`;
+    return certPage + head + radar + table + secs + comp + foot;
+  }
+
+  async function exportPDF(r) {
+    if (!downloads) { toast("التصدير غير متاح في هذا العرض"); return; }
+    if (!window.html2canvas || !window.jspdf) { toast("تعذّر تحميل أدوات التصدير، أعد فتح الصفحة وحاول مجددًا"); return; }
+    state.exporting = true; render();
+    const root = document.getElementById("print-root");
+    try {
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+      const P = printPalette();
+      [["--p-mint", P.mint], ["--p-bg", P.bg], ["--p-surface", P.surface], ["--p-surface-2", P.surface2], ["--p-fg", P.fg], ["--p-muted", P.muted], ["--p-line", P.line], ["--p-ink", P.ink]]
+        .forEach(([k, v]) => root.style.setProperty(k, v));
+      root.innerHTML = printHTML(r, P);
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait", compress: true });
+      const M = 14, W = 210 - 2 * M, k = W / 688, SC = 2;
+      const opts = { scale: SC, backgroundColor: P.bg, logging: false, useCORS: true };
+      const rgb = [1, 3, 5].map((i) => parseInt(P.bg.slice(i, i + 2), 16));
+      const paintPage = () => { pdf.setFillColor(rgb[0], rgb[1], rgb[2]); pdf.rect(0, 0, 210, 297, "F"); };
+      paintPage();
+      const footC = await window.html2canvas(root.querySelector(".p-foot"), opts);
+      const footH = (footC.height / SC) * k, footImg = footC.toDataURL("image/jpeg", 0.92);
+      const bottom = 297 - M - footH - 3;
+      let y = M;
+      const addFoot = () => pdf.addImage(footImg, "JPEG", M, 297 - M - footH, W, footH);
+      const place = (canvas, h) => {
+        if (y + h > bottom && y > M) { addFoot(); pdf.addPage(); paintPage(); y = M; }
+        pdf.addImage(canvas.toDataURL("image/jpeg", 0.92), "JPEG", M, y, W, h);
+        y += h;
+      };
+      for (const b of root.querySelectorAll(".pb")) {
+        const c = await window.html2canvas(b, opts);
+        const h = (c.height / SC) * k;
+        if (b.classList.contains("cert-page")) { place(c, Math.min(h, bottom - M)); addFoot(); pdf.addPage(); paintPage(); y = M; continue; }
+        if (h <= bottom - M) { place(c, h); continue; }
+        const slicePx = Math.floor(((bottom - M) / k) * SC);
+        for (let off = 0; off < c.height; off += slicePx) {
+          const sh = Math.min(slicePx, c.height - off);
+          const part = document.createElement("canvas"); part.width = c.width; part.height = sh;
+          part.getContext("2d").drawImage(c, 0, off, c.width, sh, 0, 0, c.width, sh);
+          place(part, (sh / SC) * k);
+        }
+      }
+      addFoot();
+      const blob = pdf.output("blob");
+      root.innerHTML = "";
+      await downloads.save({ filename: `تقرير-Vector-${r.createdAt.slice(0, 10)}.pdf`, data: blob });
+      toast("تم حفظ التقرير");
+    } catch (e) {
+      root.innerHTML = "";
+      const code = e && e.code;
+      toast(code === "declined" ? "لم يُحفظ الملف" : code === "rate_limited" ? "هناك طلب حفظ مفتوح، أكمله ثم حاول مجددًا" : "تعذّر إنشاء التقرير، حاول مجددًا");
+    } finally {
+      state.exporting = false; render();
+    }
+  }
+
+  async function exportBackup() {
+    if (!downloads) { toast("التصدير غير متاح في هذا العرض"); return; }
+    const data = JSON.stringify({ app: "bq", version: 1, exportedAt: new Date().toISOString(), results: getResults() }, null, 2);
+    try { await downloads.save({ filename: `Vector-نسخة-احتياطية-${new Date().toISOString().slice(0, 10)}.json`, data }); toast("تم حفظ النسخة الاحتياطية"); }
+    catch (e) { toast(e && e.code === "declined" ? "لم يُحفظ الملف" : "تعذّر حفظ النسخة الاحتياطية"); }
+  }
+  function importFile(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result));
+        const incoming = (Array.isArray(parsed) ? parsed : parsed && parsed.results) || [];
+        const valid = incoming.filter(validResult);
+        if (!valid.length) { toast("لم نجد في الملف نتائج صالحة للاستيراد"); return; }
+        const list = getResults(); const ids = new Set(list.map((x) => x.id));
+        let added = 0;
+        valid.forEach((x) => { if (!ids.has(x.id)) { list.push(x); ids.add(x.id); added++; } });
+        saveResults(list); render();
+        toast(added ? `تم استيراد ${added} نتيجة` : "كل نتائج الملف موجودة مسبقًا");
+      } catch (e) { toast("الملف غير صالح؛ اختر ملف نسخة احتياطية بصيغة JSON"); }
+    };
+    reader.onerror = () => toast("تعذّرت قراءة الملف");
+    reader.readAsText(file);
+  }
+
+  /* ---------- Events ---------- */
+  document.addEventListener("click", (ev) => {
+    const t = ev.target.closest("button, [data-go]");
+    if (!t || t.disabled) return;
+    const ds = t.dataset;
+    if (t.classList.contains("brand")) {
+      const now = Date.now();
+      state.brandTaps = (state.brandTaps || []).filter((x) => now - x < 2000).concat(now);
+      if (state.brandTaps.length >= 5) { state.brandTaps = []; go("owner"); return; }
+    }
+    if (ds.go) { if (ds.go === "intro" && session && Object.keys(session.answers).length) { go("landing"); return; } go(ds.go); return; }
+    if (ds.themeMode) { themeMode = ds.themeMode; sSet(KEYS.theme, themeMode); applyTheme(); render(); return; }
+    if (ds.answer) { answer(+ds.answer); return; }
+    if (ds.open) { go("results", { resultId: ds.open, chartTab: "radar", resTab: "dist", fromOwner: false }); return; }
+    if (ds.ownerOpen) { go("results", { resultId: ds.ownerOpen, chartTab: "radar", resTab: "dist", fromOwner: true }); return; }
+    if (ds.tab) { state.chartTab = ds.tab; render(); return; }
+    if (ds.resTab) { state.resTab = ds.resTab; render(); const b = document.getElementById("res-body"); if (b) b.scrollTop = 0; return; }
+    if (ds.toggle != null) {
+      const cur = state.expanded[state.resultId] || { 0: true };
+      cur[ds.toggle] = !cur[ds.toggle]; state.expanded[state.resultId] = cur; render(); return;
+    }
+    if (ds.del) { state.confirmDelete = ds.del; render(); return; }
+    if (ds.delYes && REMOTE && state.view === "owner") {
+      const row = (state.remoteResults || []).find((x) => x.id === ds.delYes);
+      state.confirmDelete = null;
+      if (row) rest("/rest/v1/rpc/owner_delete", { p_secret: state.ownerSecret, p_id: row._rowId })
+        .then(() => { state.remoteResults = state.remoteResults.filter((x) => x.id !== ds.delYes); render(); toast("تم حذف المشاركة"); })
+        .catch(() => toast("تعذّر حذف المشاركة"));
+      return;
+    }
+    if (ds.delYes) {
+      saveResults(getResults().filter((x) => x.id !== ds.delYes));
+      const c = getChecks(); delete c[ds.delYes]; sSet(KEYS.checks, c);
+      state.confirmDelete = null; render(); toast("تم حذف النتيجة"); return;
+    }
+    switch (ds.action) {
+      case "menu": state.menuOpen = !state.menuOpen; render(); break;
+      case "start": startSession(); break;
+      case "resume": go("question", { dir: "fwd", prevP: 0 }); break;
+      case "restart": state.confirmRestart = true; render(); break;
+      case "restart-no": state.confirmRestart = false; render(); break;
+      case "restart-yes": sDel(KEYS.session); session = null; go("intro"); break;
+      case "save-exit": stopTimer(); saveSession(); go("landing"); toast("حُفظ تقدّمك"); break;
+      case "copy": { const r = getResults().find((x) => x.id === state.resultId) || (state.remoteResults || []).find((x) => x.id === state.resultId); if (r) copyText(summaryText(r)); break; }
+      case "pdf": { const r = getResults().find((x) => x.id === state.resultId) || (state.remoteResults || []).find((x) => x.id === state.resultId); if (r) exportPDF(r); break; }
+      case "retake": if (session) { sDel(KEYS.session); session = null; } go("intro"); break;
+      case "backup": exportBackup(); break;
+      case "import": { const f = document.getElementById("import-file"); if (f) f.click(); break; }
+      case "del-no": state.confirmDelete = null; render(); break;
+      case "owner-lock": state.ownerUnlocked = false; state.ownerSecret = null; state.remoteResults = null; go("landing"); break;
+      case "owner-refresh": loadRemote().then(() => { render(); toast("تم تحديث المشاركات"); }).catch(() => toast("تعذّر التحديث")); break;
+      case "owner-csv": exportOwnerCSV(); break;
+    }
+  });
+  document.addEventListener("submit", (ev) => {
+    if (ev.target.id === "owner-form") { ev.preventDefault(); submitOwnerForm(); }
+  });
+  document.addEventListener("change", (ev) => {
+    const el = ev.target;
+    if (el.id === "hide-history") { if (el.checked) sSet(KEYS.hideHistory, true); else sDel(KEYS.hideHistory); render(); toast(el.checked ? "أُخفيت صفحة «نتائجي» عن المشاركين" : "عادت صفحة «نتائجي» للظهور"); return; }
+    if (el.id === "consent") { const ce = document.getElementById("consent-err"); if (ce) ce.hidden = true; return; }
+    if (el.id === "owner-sort") { state.ownerSort = el.value; refreshOwnerRows(); return; }
+    if (el.id === "import-file" && el.files && el.files[0]) { importFile(el.files[0]); el.value = ""; return; }
+    if (el.dataset && el.dataset.check) {
+      const [sid, k] = el.dataset.check.split(":");
+      const c = getChecks(); c[state.resultId] = c[state.resultId] || {};
+      const arr = c[state.resultId][sid] || [false, false, false];
+      arr[+k] = el.checked; c[state.resultId][sid] = arr; sSet(KEYS.checks, c);
+      el.closest(".check").classList.toggle("done", el.checked);
+    }
+  });
+  document.addEventListener("input", (ev) => {
+    if (ev.target.id === "owner-q") { state.ownerQuery = ev.target.value; refreshOwnerRows(); return; }
+    if (ev.target.id === "pin-1" || ev.target.id === "pin-2") { const e = document.getElementById("pin-err"); if (e) e.hidden = true; }
+    if (ev.target.id === "name-input") { const e = document.getElementById("name-err"); if (e) e.hidden = true; ev.target.removeAttribute("aria-invalid"); }
+  });
+  document.addEventListener("keydown", (ev) => {
+    if ((ev.ctrlKey || ev.metaKey) && ev.shiftKey && (ev.key === "A" || ev.key === "a" || ev.code === "KeyA")) { ev.preventDefault(); go("owner"); return; }
+    if (state.view === "intro" && ev.key === "Enter" && ev.target.id === "name-input") { ev.preventDefault(); startSession(); return; }
+    if (state.view !== "question" || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    if (ev.target && (ev.target.tagName === "INPUT" || ev.target.tagName === "TEXTAREA")) return;
+    const map = { "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "١": 1, "٢": 2, "٣": 3, "٤": 4, "٥": 5 };
+    if (map[ev.key]) { ev.preventDefault(); answer(map[ev.key]); }
+  });
+
+  setTimeout(flushPending, 1500);
+  // Hidden owner entry: opening the page with #admin at the end of the link.
+  try { if ((location.hash || "").replace("#", "") === "admin") state.view = "owner"; } catch (e) {}
+  window.addEventListener("hashchange", () => { if (location.hash === "#admin") go("owner"); });
+  render();
+})();
+</script>
+</body>
+</html>
