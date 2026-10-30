@@ -17,7 +17,6 @@
 <meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="fonts.css">
 <link rel="icon" type="image/png" href="icon.png">
-<meta name="description" content="مقياس Vector: يكشف أبرز خمس نقاط قوة لديك بأسلوب الاختيار الإجباري، مع تقرير مهني مفصل.">
 <meta name="theme-color" content="#2b2a7a">
 <style>
 html, body { margin: 0; }
@@ -597,6 +596,50 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
   .side-nav .ico { display: none; }
 }
 
+
+/* ---- Owner: participant bar and answers ---- */
+.owner-back { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.o-who { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 6px 14px; border-radius: 999px; background: var(--surface-2); font-size: .88rem; color: var(--muted); }
+.o-who b { color: var(--fg); }
+.o-contact { font-family: var(--mono); font-size: .85rem; white-space: nowrap; }
+.an-sum { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.an-list { display: flex; flex-direction: column; gap: 8px; }
+.an-row { display: grid; grid-template-columns: 30px minmax(0, 1fr) minmax(0, 1fr) 110px; gap: 8px; align-items: stretch; padding: 8px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+.an-n { font-family: var(--mono); color: var(--muted); align-self: center; text-align: center; font-size: .85rem; }
+.an-st { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border-radius: 10px; border: 1px solid transparent; min-width: 0; }
+.an-st .st-tag { width: 24px; height: 24px; border-radius: 7px; font-size: .78rem; background: var(--surface-2); color: var(--muted); }
+.an-st p { font-size: .88rem; line-height: 1.6; }
+.an-st small { color: var(--dc); font-weight: 600; font-size: .75rem; }
+.an-st.on { background: color-mix(in srgb, var(--dc) 10%, var(--surface)); border-color: color-mix(in srgb, var(--dc) 40%, var(--line)); }
+.an-st.on .st-tag { background: var(--dc); color: var(--surface); }
+.an-res { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; text-align: center; }
+.an-pick { font-size: .78rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--surface-2); white-space: nowrap; }
+.an-pick.s-a { background: color-mix(in srgb, var(--ink) 14%, transparent); color: var(--ink); }
+.an-pick.s-b { background: color-mix(in srgb, var(--mint) 18%, transparent); color: var(--mint); }
+.an-pick.to, .an-pick.none { background: color-mix(in srgb, #dc2626 12%, transparent); color: #dc2626; }
+.an-t { font-family: var(--mono); font-size: .72rem; color: var(--muted); }
+@media (max-width: 720px) {
+  .an-sum { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .an-row { grid-template-columns: 26px minmax(0, 1fr); }
+  .an-row .an-st, .an-row .an-res { grid-column: 2; }
+  .an-res { flex-direction: row; justify-content: flex-start; }
+}
+
+
+/* ---- Timer pause ---- */
+.q-wrap { position: relative; }
+.pause-btn { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.pause-btn:hover { background: var(--surface-2); }
+.pause-btn .ico { width: 16px; height: 16px; }
+.q-wrap.is-paused .pair, .q-wrap.is-paused .scale5, .q-wrap.is-paused .q-ask { visibility: hidden; }
+.q-wrap.is-paused .timer-track i { background: var(--muted); }
+.paused-cover { position: absolute; inset: 0 0 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center;
+  background: var(--surface); border: 1px dashed var(--line); border-radius: var(--r-lg); padding: 20px; }
+.paused-cover[hidden] { display: none !important; }
+.paused-cover b { font-size: 1.25rem; }
+.pc-ic { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); color: var(--ink); }
+.pc-ic .ico { width: 24px; height: 24px; }
+
 /* Print/PDF render surface — colours follow the app theme at export time (--p-* set by script) */
 #print-root { position: fixed; top: 0; left: -12000px; width: 688px; z-index: -1; pointer-events: none;
   --p-bg: #f4f5fa; --p-surface: #ffffff; --p-surface-2: #eceef6; --p-fg: #151832; --p-muted: #595f7d; --p-line: #dfe2ee; --p-ink: #1b1f45;
@@ -837,7 +880,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
     throw new Error("pairs");
   }
   BQ.PAIRS = buildPairs();
-  BQ.ITEM_SECONDS = 20;
+  BQ.ITEM_SECONDS = 35;
 
   BQ.DOMAIN_BY_ID = Object.fromEntries(BQ.DOMAINS.map((d) => [d.id, d]));
   BQ.STRENGTH_BY_ID = Object.fromEntries(BQ.STRENGTHS.map((s) => [s.id, s]));
@@ -1148,7 +1191,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
       if (v === 1) strong[sa]++;
       if (v === 5) strong[sb]++;
       if (v === 3) neutral++;
-      const ms = Math.min(20000, Math.max(800, a.ms || 20000));
+      const ms = Math.min(BQ.ITEM_SECONDS * 1000, Math.max(800, a.ms || BQ.ITEM_SECONDS * 1000));
       if (v <= 2) times[sa].push(ms);
       if (v >= 4) times[sb].push(ms);
     });
@@ -1321,7 +1364,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
   async function submitRemote(r) {
     if (!REMOTE) return;
     const { answers, ...rest_ } = r;
-    await rest("/rest/v1/submissions", { ref: refOf(r), name: r.name, show_name: r.showName !== false, consent: true, result: { ...rest_, answers } }, "return=minimal");
+    await rest("/rest/v1/submissions", { ref: refOf(r), name: r.name, contact: r.contact || null, show_name: r.showName !== false, consent: true, result: { ...rest_, answers } }, "return=minimal");
   }
   async function flushPending() {
     if (!REMOTE) return;
@@ -1337,7 +1380,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
   }
   function rowToResult(row) {
     const res = row.result || {};
-    return { ...res, id: res.id || row.id, _rowId: row.id, name: row.name, showName: row.show_name, createdAt: res.createdAt || row.created_at };
+    return { ...res, id: res.id || row.id, _rowId: row.id, name: row.name, contact: row.contact || res.contact || "", showName: row.show_name, createdAt: res.createdAt || row.created_at };
   }
   const ownerSource = () => (REMOTE ? state.remoteResults || [] : getResults());
 
@@ -1514,7 +1557,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
   function viewIntro() {
     const bullets = [
       "ستظهر لك في كل سؤال عبارتان، فاختر الأقرب إليك حتى لو انطبقت عليك العبارتان.",
-      "لكل سؤال 20 ثانية، فاعتمد على انطباعك الأول.",
+      "لكل سؤال 35 ثانية، فاعتمد على انطباعك الأول. ويمكنك إيقاف العداد مؤقتًا إذا احتجت إلى استراحة.",
       "اختر «محايد» فقط عندما تتساوى العبارتان عندك فعلًا.",
       "لا توجد إجابات صحيحة أو خاطئة، ولا يمكن الرجوع إلى سؤال سابق.",
       "يمكنك الحفظ والخروج ثم المتابعة لاحقًا.",
@@ -1529,8 +1572,10 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
       </div>
       <div class="field"><label for="name-input">اسمك</label><input id="name-input" type="text" maxlength="40" placeholder="الاسم كما تحب أن يظهر" autocomplete="name" aria-describedby="name-err" required>
         <span class="field-err" id="name-err" hidden>اكتب اسمك للمتابعة</span>
-        <label class="opt-check" for="show-name"><input type="checkbox" id="show-name" checked><span>أظهر اسمي في التقرير</span></label>
-        ${REMOTE ? `<label class="opt-check" for="consent"><input type="checkbox" id="consent"><span>أوافق على حفظ اسمي ونتيجتي لدى إدارة المقياس لأغراض التحليل وتحسين الخدمة</span></label>
+        <label class="opt-check" for="show-name"><input type="checkbox" id="show-name" checked><span>أظهر اسمي في التقرير</span></label></div>
+      <div class="field"><label for="contact-input">رقم الجوال أو البريد الإلكتروني</label><input id="contact-input" type="text" inputmode="email" maxlength="100" dir="ltr" placeholder="05xxxxxxxx أو name@example.com" autocomplete="email" aria-describedby="contact-err" required>
+        <span class="field-err" id="contact-err" hidden>اكتب رقم جوال صحيحًا أو بريدًا إلكترونيًا للمتابعة</span>
+        ${REMOTE ? `<label class="opt-check" for="consent"><input type="checkbox" id="consent"><span>أوافق على حفظ اسمي ووسيلة التواصل ونتيجتي لدى إدارة المقياس لأغراض التحليل وتحسين الخدمة</span></label>
         <span class="field-err" id="consent-err" hidden>يجب الموافقة على حفظ البيانات للمتابعة</span>` : ""}</div>
       <div><button class="btn btn-primary" data-action="start">ابدأ الآن<i data-lucide="arrow-left"></i></button></div></div></div>`;
   }
@@ -1558,10 +1603,13 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
         </div>
         <div class="scale5" role="group" aria-labelledby="q-ask">${BQ.PAIR_SCALE.map((o) =>
           `<button data-answer="${o.v}" aria-pressed="false" aria-label="${o.label}" class="sv sv-${o.v}"><span class="dot" aria-hidden="true"></span><span>${o.short}</span></button>`).join("")}</div>
-        <div class="timer" id="timer" aria-hidden="true"><div class="timer-track"><i id="timer-bar"></i></div><span id="timer-num">${BQ.ITEM_SECONDS}</span></div>
+        <div class="timer" id="timer"><div class="timer-track" aria-hidden="true"><i id="timer-bar"></i></div><span id="timer-num" aria-hidden="true">${BQ.ITEM_SECONDS}</span>
+          <button class="pause-btn" data-action="pause" aria-label="إيقاف العداد مؤقتًا" title="إيقاف العداد مؤقتًا (مسافة)"><i data-lucide="pause"></i></button></div>
+        <div class="paused-cover" id="paused-cover" hidden><span class="pc-ic"><i data-lucide="pause"></i></span><b>العداد متوقف</b><span class="muted">أُخفيت العبارتان حتى تعود. لديك <span id="pc-left"></span> ثانية في هذا السؤال.</span>
+          <button class="btn btn-primary" data-action="resume-timer"><i data-lucide="play"></i>متابعة</button></div>
       </div>
       <div class="q-controls">
-        <span class="muted" style="font-size:.85rem">اختصارات لوحة المفاتيح: 1 إلى 5</span>
+        <span class="muted" style="font-size:.85rem">اختصارات لوحة المفاتيح: 1 إلى 5، والمسافة للإيقاف المؤقت</span>
         <button class="link-btn" data-action="save-exit">حفظ والخروج</button>
       </div></div>`;
   }
@@ -1572,7 +1620,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
 
   function reportSection(r, id, i) {
     const s = S[id], c = BQ.CONTENT[id];
-    const open = (state.expanded[r.id] || { 0: true })[i];
+    const open = state.fromOwner && state.ownerUnlocked ? true : (state.expanded[r.id] || { 0: true })[i];
     const checks = (getChecks()[r.id] || {})[id] || [];
     const list = (arr) => `<ul>${arr.map((t) => `<li>${t}</li>`).join("")}</ul>`;
     const blk = (ic, title, body, wide) => `<div class="r-block ${wide ? "wide" : ""}"><h4><i data-lucide="${ic}"></i>${title}</h4>${body}</div>`;
@@ -1596,6 +1644,37 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
       </button>${body}</article>`;
   }
 
+  function answersPanel(r) {
+    const ans = r.answers || {};
+    const scaleLbl = { 1: "أ تمامًا", 2: "أقرب لـ أ", 3: "محايد", 4: "أقرب لـ ب", 5: "ب تمامًا" };
+    let neutral = 0, timeouts = 0, totalMs = 0, n = 0;
+    const rows = BQ.PAIRS.map((p, i) => {
+      const a = ans[p.id] || ans[String(p.id)];
+      const A = BQ.ST_BY_ID[p.a], B = BQ.ST_BY_ID[p.b];
+      const sa = S[A.strengthId], sb = S[B.strengthId];
+      const v = a ? a.value : undefined;
+      if (a) { n++; totalMs += Math.min(a.ms || 0, BQ.ITEM_SECONDS * 1000); if (v == null) timeouts++; if (v === 3) neutral++; }
+      const side = v == null ? "" : v <= 2 ? "a" : v >= 4 ? "b" : "n";
+      const pick = !a ? `<span class="an-pick none">لم يُجب</span>` : v == null ? `<span class="an-pick to">انتهى الوقت</span>` : `<span class="an-pick s-${side}">${scaleLbl[v]}</span>`;
+      const secs = a && a.ms != null ? `${Math.min(BQ.ITEM_SECONDS, Math.round((a.ms || 0) / 100) / 10)} ث` : "";
+      return `<div class="an-row">
+        <span class="an-n">${i + 1}</span>
+        <div class="an-st ${side === "a" ? "on" : ""}" style="${dc(sa.domain)}"><span class="st-tag">أ</span><div><p>${esc(A.text)}</p><small>${sa.name}</small></div></div>
+        <div class="an-st ${side === "b" ? "on" : ""}" style="${dc(sb.domain)}"><span class="st-tag">ب</span><div><p>${esc(B.text)}</p><small>${sb.name}</small></div></div>
+        <div class="an-res">${pick}<span class="an-t">${secs}</span></div>
+      </div>`;
+    }).join("");
+    const avg = n ? Math.round(totalMs / n / 100) / 10 : 0;
+    return `<div class="an-sum">
+        <div class="o-stat"><span>أسئلة مُجابة</span><b class="mono-ref">${n - timeouts} / 60</b></div>
+        <div class="o-stat"><span>محايد</span><b class="mono-ref">${neutral}</b></div>
+        <div class="o-stat"><span>انتهى الوقت</span><b class="mono-ref">${timeouts}</b></div>
+        <div class="o-stat"><span>متوسط زمن الإجابة</span><b class="mono-ref">${avg} ث</b></div>
+      </div>
+      <p class="muted" style="font-size:.85rem;margin:4px 0 12px">الأسئلة مرتبة حسب رقمها في المقياس، وعبارة «أ» و«ب» بترتيبها الأصلي، والعبارة التي مال إليها المشارك مظللة.</p>
+      <div class="an-list">${rows}</div>`;
+  }
+
   function viewResults() {
     const r = getResults().find((x) => x.id === state.resultId) || (state.remoteResults || []).find((x) => x.id === state.resultId);
     if (!r) {
@@ -1611,12 +1690,15 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
     const weak = r.weakestDomain;
     const weakStrengths = BQ.STRENGTHS.filter((s) => s.domain === weak);
     const pdfLabel = state.exporting ? "جاري إعداد التقرير..." : "تصدير التقرير PDF";
-    const back = state.fromOwner && state.ownerUnlocked ? `<div class="owner-back"><button class="btn btn-ghost btn-sm" data-go="owner"><i data-lucide="arrow-right"></i>العودة إلى لوحة المالك</button></div>` : "";
+    const back = state.fromOwner && state.ownerUnlocked ? `<div class="owner-back"><button class="btn btn-ghost btn-sm" data-go="owner"><i data-lucide="arrow-right"></i>العودة إلى لوحة المالك</button>
+      <div class="o-who"><b>${esc(r.name || "")}</b><span dir="ltr">${esc(r.contact || "—")}</span><span>${fmtDate(r.createdAt)}</span><span class="mono-ref">${refOf(r)}</span></div></div>` : "";
     const tab = state.resTab || "dist";
-    const tabs = [["dist", "التوزيع"], ["report", "التقرير التفصيلي"], ["more", "قوة مكمّلة"]]
+    const owner = state.fromOwner && state.ownerUnlocked;
+    const tabs = [["dist", "التوزيع"], ["report", owner ? "التقرير الكامل" : "التقرير التفصيلي"], ["more", "قوة مكمّلة"]].concat(owner ? [["answers", "الإجابات"]] : [])
       .map(([k, l]) => `<button role="tab" data-res-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join("");
     let panel;
-    if (tab === "report") panel = `<div class="report">${r.top5.map((id, i) => reportSection(r, id, i)).join("")}</div>`;
+    if (tab === "answers" && owner) panel = answersPanel(r);
+    else if (tab === "report") panel = `<div class="report">${r.top5.map((id, i) => reportSection(r, id, i)).join("")}</div>`;
     else if (tab === "more") panel = `<div class="complement" style="${dc(weak)}">
         <h2>قوة مكمّلة لك</h2>
         <p><span class="badge">${D[weak].name}</span> هو أقل مجالاتك حضورًا (${r.domainScores[weak]} من 100).</p>
@@ -1677,7 +1759,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
         <li>يتكون التقييم من 60 سؤالًا. في كل سؤال عبارتان تمثلان قوتين مختلفتين، وتختار الأقرب إليك على مقياس من خمس درجات.</li>
         <li>يضم التقييم 120 عبارة، وتظهر كل قوة في 6 مقارنات مع 6 قوى مختلفة، أغلبها من مجالات أخرى.</li>
         <li>يُسمى هذا الأسلوب «الاختيار الإجباري». وهو يقلل ميل الإنسان إلى الموافقة على كل العبارات الإيجابية، فيكشف أولوياتك الحقيقية بدل الصورة التي تتمناها.</li>
-        <li>لكل سؤال مهلة 20 ثانية، لأن الانطباع الأول أصدق في التعبير عن نمطك الطبيعي من الإجابة المتأنية.</li>
+        <li>لكل سؤال مهلة 35 ثانية، مع إمكانية إيقاف العداد مؤقتًا، لأن الانطباع الأول أصدق في التعبير عن نمطك الطبيعي من الإجابة المتأنية.</li>
         <li>تحصل العبارة التي تختارها «تمامًا» على نقطتين، و«الأقرب» على نقطة، و«المحايد» على نصف نقطة لكل عبارة. ثم تتحول نقاط كل قوة إلى درجة من 0 إلى 100، ودرجة كل مجال هي متوسط نقاط قوته الخمس.</li>
         <li>عند تساوي درجتين تتقدم القوة التي اخترتها «تمامًا» مرات أكثر، ثم القوة التي اخترتها بسرعة أكبر.</li>
         <li>ينبّهك التقرير إذا أكثرت من اختيار «محايد» أو انتهى الوقت في عدد من الأسئلة، لأن ذلك يضعف دقة النتيجة.</li>
@@ -1703,7 +1785,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
   function ownerFiltered() {
     const q = (state.ownerQuery || "").trim();
     let list = ownerSource().slice();
-    if (q) list = list.filter((r) => (r.name || "").includes(q) || refOf(r).toLowerCase().includes(q.toLowerCase()));
+    if (q) list = list.filter((r) => (r.name || "").includes(q) || (r.contact || "").toLowerCase().includes(q.toLowerCase()) || refOf(r).toLowerCase().includes(q.toLowerCase()));
     const sort = state.ownerSort || "new";
     if (sort === "old") list.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
     else if (sort === "name") list.sort((a, b) => (a.name || "").localeCompare(b.name || "", "ar"));
@@ -1712,7 +1794,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
   }
   function ownerRows() {
     const list = ownerFiltered();
-    if (!list.length) return `<tr><td colspan="7" class="o-empty">${ownerSource().length ? "لا توجد نتائج مطابقة للبحث" : REMOTE ? "لا توجد مشاركات بعد" : "لم يُكمل أحد التقييم على هذا الجهاز بعد"}</td></tr>`;
+    if (!list.length) return `<tr><td colspan="8" class="o-empty">${ownerSource().length ? "لا توجد نتائج مطابقة للبحث" : REMOTE ? "لا توجد مشاركات بعد" : "لم يُكمل أحد التقييم على هذا الجهاز بعد"}</td></tr>`;
     return list.map((r, i) => {
       const first = S[r.top5[0]];
       const confirm = state.confirmDelete === r.id;
@@ -1722,6 +1804,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
       return `<tr>
         <td class="o-num">${i + 1}</td>
         <td><b>${esc(r.name || "بدون اسم")}</b>${r.showName === false ? `<span class="o-hidden">مخفي في التقرير</span>` : ""}</td>
+        <td class="o-contact" dir="ltr">${esc(r.contact || "—")}</td>
         <td class="o-date">${fmtDate(r.createdAt)}</td>
         <td><span class="badge" style="${dc(first.domain)}">${first.name}</span></td>
         <td class="o-top">${r.top5.slice(1).map((id) => `<span class="o-chip" style="${dc(S[id].domain)}">${S[id].name}</span>`).join("")}</td>
@@ -1767,14 +1850,14 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
         <div class="o-stat"><span>القوة الأكثر ظهورًا</span><b>${topStr ? S[topStr].name : "—"}</b></div>
       </div>
       <div class="o-bar">
-        <div class="field o-search"><label for="owner-q" class="sr-only">بحث</label><input id="owner-q" type="search" placeholder="ابحث بالاسم أو الرقم المرجعي" value="${esc(state.ownerQuery || "")}"></div>
+        <div class="field o-search"><label for="owner-q" class="sr-only">بحث</label><input id="owner-q" type="search" placeholder="ابحث بالاسم أو الجوال أو البريد أو الرقم المرجعي" value="${esc(state.ownerQuery || "")}"></div>
         <div class="field"><label for="owner-sort" class="sr-only">الترتيب</label><select id="owner-sort">
           <option value="new" ${state.ownerSort !== "old" && state.ownerSort !== "name" ? "selected" : ""}>الأحدث أولًا</option>
           <option value="old" ${state.ownerSort === "old" ? "selected" : ""}>الأقدم أولًا</option>
           <option value="name" ${state.ownerSort === "name" ? "selected" : ""}>حسب الاسم</option></select></div>
       </div>
       <div class="o-table-wrap card"><table class="o-table">
-        <thead><tr><th>#</th><th>الاسم</th><th>التاريخ</th><th>القوة الأولى</th><th>القوى من 2 إلى 5</th><th>الرقم المرجعي</th><th></th></tr></thead>
+        <thead><tr><th>#</th><th>الاسم</th><th>التواصل</th><th>التاريخ</th><th>القوة الأولى</th><th>القوى من 2 إلى 5</th><th>الرقم المرجعي</th><th></th></tr></thead>
         <tbody id="owner-rows">${ownerRows()}</tbody></table></div>
       <label class="opt-check o-setting" for="hide-history"><input type="checkbox" id="hide-history" ${hide ? "checked" : ""}><span>إخفاء صفحة «نتائجي» عن المشاركين، حتى لا يرى أحد نتائج غيره على هذا الجهاز</span></label>`;
   }
@@ -1819,11 +1902,11 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
   function csvCell(v) { const s = String(v == null ? "" : v); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; }
   async function exportOwnerCSV() {
     if (!downloads) { toast("التصدير غير متاح في هذا العرض"); return; }
-    const head = ["الاسم", "التاريخ", "الرقم المرجعي", "إظهار الاسم في التقرير",
+    const head = ["الاسم", "وسيلة التواصل", "التاريخ", "الرقم المرجعي", "إظهار الاسم في التقرير",
       "القوة 1", "درجة 1", "القوة 2", "درجة 2", "القوة 3", "درجة 3", "القوة 4", "درجة 4", "القوة 5", "درجة 5",
       "المجال الأبرز", ...BQ.DOMAINS.map((d) => d.name), ...BQ.STRENGTHS.map((s) => s.name)];
     const rows = ownerFiltered().map((r) => [
-      r.name || "", r.createdAt.slice(0, 10), refOf(r), r.showName === false ? "لا" : "نعم",
+      r.name || "", r.contact || "", r.createdAt.slice(0, 10), refOf(r), r.showName === false ? "لا" : "نعم",
       ...r.top5.flatMap((id) => [S[id].name, r.strengthScores[id]]),
       D[r.dominantDomain].name, ...BQ.DOMAINS.map((d) => r.domainScores[d.id]), ...BQ.STRENGTHS.map((s) => r.strengthScores[s.id])]);
     const csv = "﻿" + [head, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n");
@@ -1871,13 +1954,14 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
   /* ---------- Assessment flow ---------- */
   const ITEM_MS = BQ.ITEM_SECONDS * 1000;
   let timerRAF = null;
+  // Elapsed time for the current question, excluding paused time.
+  const T = { base: 0, since: 0, paused: false };
+  const elapsed = () => T.base + (T.paused ? 0 : performance.now() - T.since);
   function stopTimer() { if (timerRAF) cancelAnimationFrame(timerRAF); timerRAF = null; }
-  function startTimer() {
+  function runTimer() {
     stopTimer();
-    const start = performance.now();
-    state.shownAt = start;
     const tick = () => {
-      const left = Math.max(0, ITEM_MS - (performance.now() - start));
+      const left = Math.max(0, ITEM_MS - elapsed());
       const bar = document.getElementById("timer-bar"), num = document.getElementById("timer-num"), box = document.getElementById("timer");
       if (!bar) { timerRAF = null; return; }
       bar.style.width = (left / ITEM_MS) * 100 + "%";
@@ -1888,12 +1972,37 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
     };
     timerRAF = requestAnimationFrame(tick);
   }
-  // Coming back to a hidden tab restarts the current question's 20 seconds instead of timing it out.
+  function startTimer() {
+    T.base = 0; T.since = performance.now(); T.paused = false;
+    runTimer();
+  }
+  function setPaused(on) {
+    if (state.view !== "question" || !session || locked || T.paused === on) return;
+    if (on) { T.base = elapsed(); T.paused = true; stopTimer(); }
+    else { T.since = performance.now(); T.paused = false; runTimer(); }
+    const wrap = document.querySelector(".q-wrap"), cover = document.getElementById("paused-cover"), btn = document.querySelector(".pause-btn");
+    if (wrap) wrap.classList.toggle("is-paused", on);
+    if (cover) { cover.hidden = !on; const l = document.getElementById("pc-left"); if (l) l.textContent = Math.ceil(Math.max(0, ITEM_MS - T.base) / 1000); }
+    if (btn) {
+      btn.setAttribute("aria-label", on ? "متابعة العداد" : "إيقاف العداد مؤقتًا");
+      btn.innerHTML = `<i data-lucide="${on ? "play" : "pause"}"></i>`;
+      if (window.lucide && window.lucide.createIcons) { try { window.lucide.createIcons({ attrs: { class: "ico", "aria-hidden": "true" } }); } catch (e) {} }
+    }
+    if (!on) { const first = document.querySelector("[data-answer]"); if (first) first.focus({ preventScroll: true }); }
+  }
+  // Leaving the tab pauses the clock; the participant resumes it themselves.
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible" && state.view === "question" && session && !locked) startTimer();
-    else if (document.visibilityState === "hidden") stopTimer();
+    if (document.visibilityState === "hidden") setPaused(true);
   });
 
+  // Accepts an email, or a phone number (Saudi 05xxxxxxxx / +9665xxxxxxxx, or any international number of 8–15 digits).
+  function normalizeContact(v) {
+    const s = String(v || "").trim().replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s)) return s.toLowerCase();
+    const digits = s.replace(/[\s\-()]/g, "");
+    if (/^\+?\d{8,15}$/.test(digits)) return digits;
+    return "";
+  }
   function startSession() {
     const input = document.getElementById("name-input");
     const name = input ? input.value.trim().slice(0, 40) : "";
@@ -1901,11 +2010,14 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
     if (name.length < 2) { if (err) err.hidden = false; if (input) { input.setAttribute("aria-invalid", "true"); input.focus(); } return; }
     const showBox = document.getElementById("show-name");
     const showName = showBox ? showBox.checked : true;
+    const cIn = document.getElementById("contact-input");
+    const contact = normalizeContact(cIn ? cIn.value : "");
+    if (!contact) { const ce = document.getElementById("contact-err"); if (ce) ce.hidden = false; if (cIn) { cIn.setAttribute("aria-invalid", "true"); cIn.focus(); } return; }
     const consentBox = document.getElementById("consent");
     if (REMOTE && consentBox && !consentBox.checked) { const ce = document.getElementById("consent-err"); if (ce) ce.hidden = false; consentBox.focus(); return; }
     const seed = (Math.random() * 4294967295) >>> 0;
     const { order, flips } = BQ.buildOrder(seed);
-    session = { seed, order, flips, currentIndex: 0, answers: {}, name, showName, startedAt: new Date().toISOString(), milestones: [] };
+    session = { seed, order, flips, currentIndex: 0, answers: {}, name, showName, contact, startedAt: new Date().toISOString(), milestones: [] };
     saveSession();
     state.prevP = 0;
     go("question", { dir: "fwd" });
@@ -1921,11 +2033,11 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
     updateProgress();
   }
   function answer(v) {
-    if (locked || !session) return;
+    if (locked || !session || T.paused) return;
     locked = true; stopTimer();
     const pid = session.order[session.currentIndex];
     const canonical = session.flips[pid] ? 6 - v : v;
-    record({ value: canonical, ms: Math.round(performance.now() - state.shownAt) });
+    record({ value: canonical, ms: Math.round(elapsed()) });
     document.querySelectorAll("[data-answer]").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.answer === v)));
     const a = document.getElementById("st-a"), b = document.getElementById("st-b");
     if (a && b) { a.classList.toggle("chosen", v <= 2); b.classList.toggle("chosen", v >= 4); }
@@ -1951,7 +2063,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
     stopTimer();
     go("analyzing");
     setTimeout(() => {
-      const r = BQ.buildResult(session.answers, session.name); r.showName = session.showName !== false;
+      const r = BQ.buildResult(session.answers, session.name); r.showName = session.showName !== false; r.contact = session.contact || "";
       if (REMOTE) { const p = sGet(PENDING_KEY) || []; p.push(r.id); sSet(PENDING_KEY, p); setTimeout(flushPending, 300); }
       const list = getResults(); list.unshift(r); saveResults(list);
       sDel(KEYS.session); session = null;
@@ -2138,6 +2250,8 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
       case "restart": state.confirmRestart = true; render(); break;
       case "restart-no": state.confirmRestart = false; render(); break;
       case "restart-yes": sDel(KEYS.session); session = null; go("intro"); break;
+      case "pause": setPaused(!T.paused); break;
+      case "resume-timer": setPaused(false); break;
       case "save-exit": stopTimer(); saveSession(); go("landing"); toast("حُفظ تقدّمك"); break;
       case "copy": { const r = getResults().find((x) => x.id === state.resultId) || (state.remoteResults || []).find((x) => x.id === state.resultId); if (r) copyText(summaryText(r)); break; }
       case "pdf": { const r = getResults().find((x) => x.id === state.resultId) || (state.remoteResults || []).find((x) => x.id === state.resultId); if (r) exportPDF(r); break; }
@@ -2170,6 +2284,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
   document.addEventListener("input", (ev) => {
     if (ev.target.id === "owner-q") { state.ownerQuery = ev.target.value; refreshOwnerRows(); return; }
     if (ev.target.id === "pin-1" || ev.target.id === "pin-2") { const e = document.getElementById("pin-err"); if (e) e.hidden = true; }
+    if (ev.target.id === "contact-input") { const e = document.getElementById("contact-err"); if (e) e.hidden = true; ev.target.removeAttribute("aria-invalid"); }
     if (ev.target.id === "name-input") { const e = document.getElementById("name-err"); if (e) e.hidden = true; ev.target.removeAttribute("aria-invalid"); }
   });
   document.addEventListener("keydown", (ev) => {
@@ -2178,6 +2293,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
     if (state.view !== "question" || ev.ctrlKey || ev.metaKey || ev.altKey) return;
     if (ev.target && (ev.target.tagName === "INPUT" || ev.target.tagName === "TEXTAREA")) return;
     const map = { "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "١": 1, "٢": 2, "٣": 3, "٤": 4, "٥": 5 };
+    if (ev.key === " " || ev.code === "Space") { if (ev.target && ev.target.tagName === "BUTTON") return; ev.preventDefault(); setPaused(!T.paused); return; }
     if (map[ev.key]) { ev.preventDefault(); answer(map[ev.key]); }
   });
 
