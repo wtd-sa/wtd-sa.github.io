@@ -640,6 +640,10 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
 .pc-ic { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); color: var(--ink); }
 .pc-ic .ico { width: 24px; height: 24px; }
 
+
+.gate-ic { width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center; background: var(--mint-soft); color: var(--mint); }
+.gate-ic .ico { width: 26px; height: 26px; }
+
 /* Print/PDF render surface — colours follow the app theme at export time (--p-* set by script) */
 #print-root { position: fixed; top: 0; left: -12000px; width: 688px; z-index: -1; pointer-events: none;
   --p-bg: #f4f5fa; --p-surface: #ffffff; --p-surface-2: #eceef6; --p-fg: #151832; --p-muted: #595f7d; --p-line: #dfe2ee; --p-ink: #1b1f45;
@@ -1518,12 +1522,12 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
     const answered = session ? Object.keys(session.answers).length : 0;
     let cta;
     if (session && answered > 0) {
-      cta = `<div class="card resume"><h2>لديك تقييم لم يكتمل</h2>
+      cta = `<div class="card resume"><h2>${session.done ? "تقريرك بانتظارك" : "لديك تقييم لم يكتمل"}</h2>
         <div class="bar" aria-hidden="true"><i style="width:${(answered / 60) * 100}%"></i></div>
         <p class="muted">أجبت عن ${answered} من 60 سؤالًا.</p>
         <div class="row">${state.confirmRestart
           ? `<p style="flex-basis:100%">ستُحذف إجاباتك الحالية. هل تريد البدء من جديد؟</p><button class="btn btn-danger btn-sm" data-action="restart-yes">نعم، ابدأ من جديد</button><button class="btn btn-ghost btn-sm" data-action="restart-no">تراجع</button>`
-          : `<button class="btn btn-primary" data-action="resume"><i data-lucide="play"></i>متابعة من حيث توقفت</button><button class="btn btn-ghost" data-action="restart"><i data-lucide="rotate-ccw"></i>البدء من جديد</button>`}</div></div>`;
+          : `<button class="btn btn-primary" data-action="resume"><i data-lucide="${session.done ? "eye" : "play"}"></i>${session.done ? "عرض التقرير" : "متابعة من حيث توقفت"}</button><button class="btn btn-ghost" data-action="restart"><i data-lucide="rotate-ccw"></i>البدء من جديد</button>`}</div></div>`;
     } else {
       cta = `<button class="btn btn-primary" data-go="intro">ابدأ التقييم<i data-lucide="arrow-left"></i></button>`;
     }
@@ -1573,10 +1577,6 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
       <div class="field"><label for="name-input">اسمك</label><input id="name-input" type="text" maxlength="40" placeholder="الاسم كما تحب أن يظهر" autocomplete="name" aria-describedby="name-err" required>
         <span class="field-err" id="name-err" hidden>اكتب اسمك للمتابعة</span>
         <label class="opt-check" for="show-name"><input type="checkbox" id="show-name" checked><span>أظهر اسمي في التقرير</span></label></div>
-      <div class="field"><label for="contact-input">رقم الجوال أو البريد الإلكتروني</label><input id="contact-input" type="text" inputmode="email" maxlength="100" dir="ltr" placeholder="05xxxxxxxx أو name@example.com" autocomplete="email" aria-describedby="contact-err" required>
-        <span class="field-err" id="contact-err" hidden>اكتب رقم جوال صحيحًا أو بريدًا إلكترونيًا للمتابعة</span>
-        ${REMOTE ? `<label class="opt-check" for="consent"><input type="checkbox" id="consent"><span>أوافق على حفظ اسمي ووسيلة التواصل ونتيجتي لدى إدارة المقياس لأغراض التحليل وتحسين الخدمة</span></label>
-        <span class="field-err" id="consent-err" hidden>يجب الموافقة على حفظ البيانات للمتابعة</span>` : ""}</div>
       <div><button class="btn btn-primary" data-action="start">ابدأ الآن<i data-lucide="arrow-left"></i></button></div></div></div>`;
   }
 
@@ -1922,6 +1922,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
       case "intro": body = viewIntro(); break;
       case "question": body = session ? viewQuestion() : viewLanding(); break;
       case "analyzing": body = viewAnalyzing(); break;
+      case "gate": body = session && session.done ? viewGate() : viewLanding(); break;
       case "results": body = viewResults(); break;
       case "history": body = sGet(KEYS.hideHistory) && !state.ownerUnlocked ? viewLanding() : viewHistory(); break;
       case "about": body = viewAbout(); break;
@@ -2010,14 +2011,9 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
     if (name.length < 2) { if (err) err.hidden = false; if (input) { input.setAttribute("aria-invalid", "true"); input.focus(); } return; }
     const showBox = document.getElementById("show-name");
     const showName = showBox ? showBox.checked : true;
-    const cIn = document.getElementById("contact-input");
-    const contact = normalizeContact(cIn ? cIn.value : "");
-    if (!contact) { const ce = document.getElementById("contact-err"); if (ce) ce.hidden = false; if (cIn) { cIn.setAttribute("aria-invalid", "true"); cIn.focus(); } return; }
-    const consentBox = document.getElementById("consent");
-    if (REMOTE && consentBox && !consentBox.checked) { const ce = document.getElementById("consent-err"); if (ce) ce.hidden = false; consentBox.focus(); return; }
     const seed = (Math.random() * 4294967295) >>> 0;
     const { order, flips } = BQ.buildOrder(seed);
-    session = { seed, order, flips, currentIndex: 0, answers: {}, name, showName, contact, startedAt: new Date().toISOString(), milestones: [] };
+    session = { seed, order, flips, currentIndex: 0, answers: {}, name, showName, startedAt: new Date().toISOString(), milestones: [] };
     saveSession();
     state.prevP = 0;
     go("question", { dir: "fwd" });
@@ -2063,12 +2059,36 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
     stopTimer();
     go("analyzing");
     setTimeout(() => {
-      const r = BQ.buildResult(session.answers, session.name); r.showName = session.showName !== false; r.contact = session.contact || "";
-      if (REMOTE) { const p = sGet(PENDING_KEY) || []; p.push(r.id); sSet(PENDING_KEY, p); setTimeout(flushPending, 300); }
-      const list = getResults(); list.unshift(r); saveResults(list);
-      sDel(KEYS.session); session = null;
-      go("results", { resultId: r.id, chartTab: "radar", resTab: "dist" });
+      session.done = true;
+      saveSession();
+      go("gate");
     }, 1500);
+  }
+  // The report is unlocked only after the participant leaves a phone number or email.
+  function viewGate() {
+    return `<div class="narrow" style="max-width:520px"><form class="card intro gate" id="gate-form" autocomplete="on" novalidate>
+      <span class="gate-ic"><i data-lucide="file-check-2"></i></span>
+      <h1 style="font-size:1.6rem">تقريرك جاهز</h1>
+      <p class="muted">أكملتَ الأسئلة الستين${session && session.name ? `، يا ${esc(session.name)}` : ""}. اكتب رقم جوالك أو بريدك الإلكتروني لعرض تقرير نقاط قوتك.</p>
+      <div class="field"><label for="contact-input">رقم الجوال أو البريد الإلكتروني</label><input id="contact-input" type="text" inputmode="email" maxlength="100" dir="ltr" placeholder="05xxxxxxxx أو name@example.com" autocomplete="email" aria-describedby="contact-err" required>
+        <span class="field-err" id="contact-err" hidden>اكتب رقم جوال صحيحًا أو بريدًا إلكترونيًا لعرض التقرير</span>
+        ${REMOTE ? `<label class="opt-check" for="consent"><input type="checkbox" id="consent"><span>أوافق على حفظ اسمي ووسيلة التواصل ونتيجتي لدى إدارة المقياس لأغراض التحليل وتحسين الخدمة</span></label>
+        <span class="field-err" id="consent-err" hidden>يجب الموافقة على حفظ البيانات لعرض التقرير</span>` : ""}</div>
+      <div><button class="btn btn-primary" type="submit"><i data-lucide="eye"></i>عرض التقرير</button></div>
+    </form></div>`;
+  }
+  function submitGate() {
+    if (!session || !session.done) { go("landing"); return; }
+    const cIn = document.getElementById("contact-input");
+    const contact = normalizeContact(cIn ? cIn.value : "");
+    if (!contact) { const ce = document.getElementById("contact-err"); if (ce) ce.hidden = false; if (cIn) { cIn.setAttribute("aria-invalid", "true"); cIn.focus(); } return; }
+    const consentBox = document.getElementById("consent");
+    if (REMOTE && consentBox && !consentBox.checked) { const ce = document.getElementById("consent-err"); if (ce) ce.hidden = false; consentBox.focus(); return; }
+    const r = BQ.buildResult(session.answers, session.name); r.showName = session.showName !== false; r.contact = contact;
+    if (REMOTE) { const p = sGet(PENDING_KEY) || []; p.push(r.id); sSet(PENDING_KEY, p); setTimeout(flushPending, 300); }
+    const list = getResults(); list.unshift(r); saveResults(list);
+    sDel(KEYS.session); session = null;
+    go("results", { resultId: r.id, chartTab: "radar", resTab: "dist" });
   }
 
   /* ---------- Copy / export ---------- */
@@ -2246,7 +2266,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
     switch (ds.action) {
       case "menu": state.menuOpen = !state.menuOpen; render(); break;
       case "start": startSession(); break;
-      case "resume": go("question", { dir: "fwd", prevP: 0 }); break;
+      case "resume": if (session && session.done) go("gate"); else go("question", { dir: "fwd", prevP: 0 }); break;
       case "restart": state.confirmRestart = true; render(); break;
       case "restart-no": state.confirmRestart = false; render(); break;
       case "restart-yes": sDel(KEYS.session); session = null; go("intro"); break;
@@ -2266,6 +2286,7 @@ main.pane { padding: 0; overflow-y: auto; min-width: 0; min-height: 0; }
   });
   document.addEventListener("submit", (ev) => {
     if (ev.target.id === "owner-form") { ev.preventDefault(); submitOwnerForm(); }
+    if (ev.target.id === "gate-form") { ev.preventDefault(); submitGate(); }
   });
   document.addEventListener("change", (ev) => {
     const el = ev.target;
